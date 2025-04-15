@@ -13,7 +13,7 @@ use SParallel\Drivers\Fork\ForkDriver;
 use SParallel\Drivers\Process\ProcessDriver;
 use SParallel\Drivers\Sync\SyncDriver;
 use SParallel\Objects\Context;
-use SParallel\Services\ParallelService;
+use SParallel\Services\SParallelService;
 use SParallelLaravel\Commands\HandleSerializedClosureCommand;
 
 class SParallelServiceProvider extends ServiceProvider
@@ -34,8 +34,8 @@ class SParallelServiceProvider extends ServiceProvider
         $runningInConsole = $this->app->runningInConsole();
 
         $this->app->singleton(
-            ParallelService::class,
-            fn(): ParallelService => new ParallelService(
+            SParallelService::class,
+            fn(): SParallelService => new SParallelService(
                 driver: $this->detectDriver($runningInConsole),
             )
         );
