@@ -6,13 +6,11 @@ namespace SParallelLaravel\Commands;
 
 use Illuminate\Console\Command;
 use RuntimeException;
+use SParallel\Contracts\TaskEventsBusInterface;
 use SParallel\Drivers\Process\ProcessDriver;
+use SParallel\Transport\ContextTransport;
 use SParallel\Transport\Serializer;
 use SParallel\Transport\TaskResultTransport;
-use SParallelLaravel\Constants;
-use SParallelLaravel\Events\SParallelTaskFailedEvent;
-use SParallelLaravel\Events\SParallelTaskFinishedEvent;
-use SParallelLaravel\Events\SParallelTaskStartingEvent;
 use Throwable;
 
 class HandleSerializedClosureCommand extends Command
@@ -21,32 +19,36 @@ class HandleSerializedClosureCommand extends Command
 
     protected $description = 'Handle serialized closure';
 
-    public function handle(): void
+    public function handle(TaskEventsBusInterface $taskEventsBus): void
     {
-        event(new SParallelTaskStartingEvent(Constants::DRIVER_PROCESS));
+        $context = ContextTransport::unSerialize(
+            $_SERVER[ProcessDriver::SERIALIZED_CONTEXT_VARIABLE_NAME] ?? null
+        );
 
-        if (!array_key_exists(ProcessDriver::VARIABLE_NAME, $_SERVER)) {
+        $taskEventsBus->starting(context: $context);
+
+        if (!array_key_exists(ProcessDriver::SERIALIZED_CLOSURE_VARIABLE_NAME, $_SERVER)) {
             $exception = new RuntimeException(
                 message: 'No closure found in $_SERVER variable.'
             );
 
-            fwrite(STDERR, TaskResultTransport::serialize(exception: $exception));
+            $taskEventsBus->failed(context: $context, exception: $exception);
 
-            event(new SParallelTaskFailedEvent(Constants::DRIVER_PROCESS, $exception));
+            fwrite(STDERR, TaskResultTransport::serialize(exception: $exception));
         } else {
             try {
                 $closure = Serializer::unSerialize(
-                    $_SERVER[ProcessDriver::VARIABLE_NAME]
+                    $_SERVER[ProcessDriver::SERIALIZED_CLOSURE_VARIABLE_NAME]
                 );
 
                 fwrite(STDOUT, TaskResultTransport::serialize(result: $closure()));
             } catch (Throwable $exception) {
                 fwrite(STDERR, TaskResultTransport::serialize(exception: $exception));
 
-                event(new SParallelTaskFailedEvent(Constants::DRIVER_PROCESS, $exception));
+                $taskEventsBus->failed(context: $context, exception: $exception);
             }
         }
 
-        event(new SParallelTaskFinishedEvent(Constants::DRIVER_PROCESS));
+        $taskEventsBus->finished(context: $context);
     }
 }

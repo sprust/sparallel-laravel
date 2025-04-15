@@ -5,19 +5,25 @@ declare(strict_types=1);
 namespace SParallelLaravel;
 
 use Illuminate\Support\ServiceProvider;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SParallel\Contracts\DriverInterface;
+use SParallel\Contracts\TaskEventsBusInterface;
 use SParallel\Drivers\Fork\ForkDriver;
 use SParallel\Drivers\Process\ProcessDriver;
 use SParallel\Drivers\Sync\SyncDriver;
+use SParallel\Objects\Context;
 use SParallel\Services\ParallelService;
 use SParallelLaravel\Commands\HandleSerializedClosureCommand;
-use SParallelLaravel\Events\SParallelTaskFailedEvent;
-use SParallelLaravel\Events\SParallelTaskFinishedEvent;
-use SParallelLaravel\Events\SParallelTaskStartingEvent;
-use Throwable;
 
 class SParallelServiceProvider extends ServiceProvider
 {
+    public function register(): void
+    {
+        $this->app->singleton(Context::class);
+        $this->app->singleton(TaskEventsBusInterface::class, TaskEventsBus::class);
+    }
+
     public function boot(): void
     {
         $this->commands([
@@ -28,7 +34,7 @@ class SParallelServiceProvider extends ServiceProvider
 
         $this->app->singleton(
             ParallelService::class,
-            static fn(): ParallelService => new ParallelService(
+            fn(): ParallelService => new ParallelService(
                 driver: $this->detectDriver($runningInConsole),
             )
         );
@@ -45,30 +51,39 @@ class SParallelServiceProvider extends ServiceProvider
         }
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     private function detectDriver(bool $runningInConsole): DriverInterface
     {
+        $context = $this->app->get(Context::class);
+
         if (!config('sparallel.async')) {
+            $context->add(Constants::CONTEXT_DRIVER_KEY, Constants::DRIVER_SYNC);
+
             return new SyncDriver(
-                beforeTask: static fn() => event(new SParallelTaskStartingEvent(Constants::DRIVER_SYNC)),
-                afterTask: static fn() => event(new SParallelTaskFinishedEvent(Constants::DRIVER_SYNC)),
-                failedTask: static fn(Throwable $exception) => event(
-                    new SParallelTaskFailedEvent(Constants::DRIVER_SYNC, $exception)
-                ),
+                context: $context,
             );
         }
 
         if ($runningInConsole) {
+            $context->add(Constants::CONTEXT_DRIVER_KEY, Constants::DRIVER_FORK);
+
             return new ForkDriver(
-                beforeTask: static fn() => event(new SParallelTaskStartingEvent(Constants::DRIVER_FORK)),
-                afterTask: static fn() => event(new SParallelTaskFinishedEvent(Constants::DRIVER_FORK)),
-                failedTask: static fn(Throwable $exception) => event(
-                    new SParallelTaskFailedEvent(Constants::DRIVER_FORK, $exception)
-                ),
+                context: $context,
             );
         }
 
+        $context->add(Constants::CONTEXT_DRIVER_KEY, Constants::DRIVER_PROCESS);
+
         return new ProcessDriver(
-            scriptPath: base_path('artisan') . ' ' . app(HandleSerializedClosureCommand::class)->getName(),
+            scriptPath: sprintf(
+                '%s %s',
+                base_path('artisan'),
+                app(HandleSerializedClosureCommand::class)->getName()
+            ),
+            context: $context,
         );
     }
 }

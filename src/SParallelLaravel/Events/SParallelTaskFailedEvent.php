@@ -8,8 +8,12 @@ use Throwable;
 
 readonly class SParallelTaskFailedEvent
 {
+    /**
+     * @param array<string, mixed>|null $context
+     */
     public function __construct(
         public string $driverName,
+        public ?array $context,
         public Throwable $exception
     ) {
     }
