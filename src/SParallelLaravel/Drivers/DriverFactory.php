@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SParallelLaravel;
+namespace SParallelLaravel\Drivers;
 
 use Illuminate\Contracts\Foundation\Application;
 use Psr\Container\ContainerExceptionInterface;

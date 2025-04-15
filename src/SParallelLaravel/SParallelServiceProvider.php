@@ -15,6 +15,8 @@ use SParallel\Drivers\Sync\SyncDriver;
 use SParallel\Objects\Context;
 use SParallel\Services\SParallelService;
 use SParallelLaravel\Commands\HandleSerializedClosureCommand;
+use SParallelLaravel\Drivers\DriverFactory;
+use SParallelLaravel\Drivers\ProcessWithForkInside\ProcessWithForkInsideDriver;
 
 class SParallelServiceProvider extends ServiceProvider
 {
@@ -66,6 +68,10 @@ class SParallelServiceProvider extends ServiceProvider
 
         if ($runningInConsole) {
             return $factory->get(ForkDriver::class);
+        }
+
+        if (config('sparallel.use_fork_inside_process')) {
+            return $this->app->get(ProcessWithForkInsideDriver::class);
         }
 
         return $factory->get(ProcessDriver::class);
