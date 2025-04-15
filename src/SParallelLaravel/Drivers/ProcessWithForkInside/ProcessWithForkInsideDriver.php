@@ -29,9 +29,6 @@ class ProcessWithForkInsideDriver implements DriverInterface
      */
     public function wait(array $callbacks): WaitGroupInterface
     {
-        $processDriver = $this->app->get(DriverFactory::class)
-            ->get(ProcessDriver::class);
-
         $callback = static function () use ($callbacks): ResultsObject {
             $forkDriver = app(SParallelService::class, [
                 'driver' => app(DriverFactory::class)->get(ForkDriver::class),
@@ -40,6 +37,14 @@ class ProcessWithForkInsideDriver implements DriverInterface
             return $forkDriver->wait($callbacks);
         };
 
-        return $processDriver->wait([$callback]);
+        $processDriver = $this->app->get(DriverFactory::class)
+            ->get(ProcessDriver::class);
+
+        $waitGroup = $processDriver->wait([$callback]);
+
+        return new ProcessWithForkInsideWaitGroup(
+            waitGroup: $waitGroup,
+            callbacks: $callbacks
+        );
     }
 }
