@@ -34,46 +34,24 @@ class ProcessWithForkInsideWaitGroup implements WaitGroupInterface
         }
 
         /** @var array<ResultObject>|mixed $currentResults */
-        $currentResults = $current->getResults()[0] ?? null;
+        $currentResults = ($current->getResults()[0] ?? null)?->result;
 
-        $results = new ResultsObject();
-
-        if (!is_array($currentResults)) {
-            $results->addResult(
-                key: 'error',
-                result: new ResultObject(
-                    exception: new RuntimeException(
-                        "Expected array, got: " . gettype($currentResults)
-                    )
-                )
-            );
-
-            return $results;
+        if ($currentResults instanceof ResultsObject) {
+            return $currentResults;
         }
 
-        $invalidTypeResults = array_filter(
-            $currentResults,
-            static fn($result) => !($result instanceof ResultObject)
+        $failedResults = new ResultsObject();
+
+        $failedResults->addResult(
+            key: 'error',
+            result: new ResultObject(
+                exception: new RuntimeException(
+                    "Expected ResultsObject, got: " . (is_null($currentResults) ? 'null' : gettype($currentResults))
+                )
+            )
         );
 
-        if (count($invalidTypeResults)) {
-            $results->addResult(
-                key: 'error',
-                result: new ResultObject(
-                    exception: new RuntimeException(
-                        "Expected array of ResultObject, got: " . gettype($invalidTypeResults[0])
-                    )
-                )
-            );
-
-            return $results;
-        }
-
-        foreach ($currentResults as $key => $result) {
-            $results->addResult($key, $result);
-        }
-
-        return $results;
+        return $failedResults;
     }
 
     public function break(): void
