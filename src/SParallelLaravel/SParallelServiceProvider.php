@@ -22,6 +22,7 @@ class SParallelServiceProvider extends ServiceProvider
     {
         $this->app->singleton(Context::class);
         $this->app->singleton(TaskEventsBusInterface::class, TaskEventsBus::class);
+        $this->app->singleton(DriverFactory::class);
     }
 
     public function boot(): void
@@ -57,33 +58,16 @@ class SParallelServiceProvider extends ServiceProvider
      */
     private function detectDriver(bool $runningInConsole): DriverInterface
     {
-        $context = $this->app->get(Context::class);
+        $factory = $this->app->get(DriverFactory::class);
 
         if (!config('sparallel.async')) {
-            $context->add(Constants::CONTEXT_DRIVER_KEY, Constants::DRIVER_SYNC);
-
-            return new SyncDriver(
-                context: $context,
-            );
+            return $factory->get(SyncDriver::class);
         }
 
         if ($runningInConsole) {
-            $context->add(Constants::CONTEXT_DRIVER_KEY, Constants::DRIVER_FORK);
-
-            return new ForkDriver(
-                context: $context,
-            );
+            return $factory->get(ForkDriver::class);
         }
 
-        $context->add(Constants::CONTEXT_DRIVER_KEY, Constants::DRIVER_PROCESS);
-
-        return new ProcessDriver(
-            scriptPath: sprintf(
-                '%s %s',
-                base_path('artisan'),
-                app(HandleSerializedClosureCommand::class)->getName()
-            ),
-            context: $context,
-        );
+        return $factory->get(ProcessDriver::class);
     }
 }

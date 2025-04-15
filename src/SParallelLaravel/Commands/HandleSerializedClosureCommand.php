@@ -25,14 +25,23 @@ class HandleSerializedClosureCommand extends Command
             $_SERVER[ProcessDriver::SERIALIZED_CONTEXT_VARIABLE_NAME] ?? null
         );
 
-        $taskEventsBus->starting(context: $context);
+        $driverName = ProcessDriver::DRIVER_NAME;
+
+        $taskEventsBus->starting(
+            driverName: $driverName,
+            context: $context
+        );
 
         if (!array_key_exists(ProcessDriver::SERIALIZED_CLOSURE_VARIABLE_NAME, $_SERVER)) {
             $exception = new RuntimeException(
                 message: 'No closure found in $_SERVER variable.'
             );
 
-            $taskEventsBus->failed(context: $context, exception: $exception);
+            $taskEventsBus->failed(
+                driverName: $driverName,
+                context: $context,
+                exception: $exception
+            );
 
             fwrite(STDERR, TaskResultTransport::serialize(exception: $exception));
         } else {
@@ -45,10 +54,17 @@ class HandleSerializedClosureCommand extends Command
             } catch (Throwable $exception) {
                 fwrite(STDERR, TaskResultTransport::serialize(exception: $exception));
 
-                $taskEventsBus->failed(context: $context, exception: $exception);
+                $taskEventsBus->failed(
+                    driverName: $driverName,
+                    context: $context,
+                    exception: $exception
+                );
             }
         }
 
-        $taskEventsBus->finished(context: $context);
+        $taskEventsBus->finished(
+            driverName: $driverName,
+            context: $context
+        );
     }
 }

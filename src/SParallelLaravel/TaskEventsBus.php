@@ -13,39 +13,34 @@ use Throwable;
 
 class TaskEventsBus implements TaskEventsBusInterface
 {
-    public function starting(?Context $context): void
+    public function starting(string $driverName, ?Context $context): void
     {
         event(
             new SParallelTaskStartingEvent(
-                $this->getDriverNameByContext($context),
-                $context?->all()
+                driverName: $driverName,
+                context: $context?->all()
             )
         );
     }
 
-    public function failed(?Context $context, Throwable $exception): void
+    public function failed(string $driverName, ?Context $context, Throwable $exception): void
     {
         event(
             new SParallelTaskFailedEvent(
-                $this->getDriverNameByContext($context),
-                $context?->all(),
-                $exception
+                driverName: $driverName,
+                context: $context?->all(),
+                exception: $exception
             )
         );
     }
 
-    public function finished(?Context $context): void
+    public function finished(string $driverName, ?Context $context): void
     {
         event(
             new SParallelTaskFinishedEvent(
-                $this->getDriverNameByContext($context),
-                $context?->all()
+                driverName: $driverName,
+                context: $context?->all()
             )
         );
-    }
-
-    private function getDriverNameByContext(?Context $context): string
-    {
-        return $context?->get(Constants::CONTEXT_DRIVER_KEY) ?? 'unknown';
     }
 }
