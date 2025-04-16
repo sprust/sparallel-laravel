@@ -20,7 +20,7 @@ return [
 
     /**
      * key - event class
-     * value - listeners classes
+     * value - listener classes
      */
     'listeners'               => [
         SParallelTaskStartingEvent::class => [],
