@@ -9,7 +9,7 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use RuntimeException;
 use SParallel\Contracts\DriverInterface;
-use SParallel\Contracts\TaskEventsBusInterface;
+use SParallel\Contracts\EventsBusInterface;
 use SParallel\Drivers\Fork\ForkDriver;
 use SParallel\Drivers\Process\ProcessDriver;
 use SParallel\Drivers\Sync\SyncDriver;
@@ -21,7 +21,7 @@ class DriverFactory
     public function __construct(
         protected Application $app,
         protected Context $context,
-        protected TaskEventsBusInterface $taskEventsBus,
+        protected EventsBusInterface $eventsBus,
     ) {
     }
 
@@ -36,11 +36,11 @@ class DriverFactory
         return match ($driverClass) {
             SyncDriver::class => new SyncDriver(
                 context: $this->context,
-                taskEventsBus: $this->taskEventsBus
+                eventsBus: $this->eventsBus
             ),
             ForkDriver::class => new ForkDriver(
                 context: $this->context,
-                taskEventsBus: $this->taskEventsBus
+                eventsBus: $this->eventsBus
             ),
             ProcessDriver::class => new ProcessDriver(
                 scriptPath: sprintf(

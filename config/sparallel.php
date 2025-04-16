@@ -3,7 +3,11 @@
 use SParallelLaravel\Events\SParallelTaskStartingEvent;
 use SParallelLaravel\Events\SParallelTaskFailedEvent;
 use SParallelLaravel\Listeners\LogSParallelTaskFailedListener;
+use SParallelLaravel\Listeners\LogSParallelFlowFailedListener;
 use SParallelLaravel\Events\SParallelTaskFinishedEvent;
+use SParallelLaravel\Events\SParallelFlowStartingEvent;
+use SParallelLaravel\Events\SParallelFlowFailedEvent;
+use SParallelLaravel\Events\SParallelFlowFinishedEvent;
 
 return [
     /**
@@ -23,6 +27,11 @@ return [
      * value - listener classes
      */
     'listeners'               => [
+        SParallelFlowStartingEvent::class => [],
+        SParallelFlowFailedEvent::class   => [
+            LogSParallelFlowFailedListener::class,
+        ],
+        SParallelFlowFinishedEvent::class => [],
         SParallelTaskStartingEvent::class => [],
         SParallelTaskFailedEvent::class   => [
             LogSParallelTaskFailedListener::class,

@@ -6,7 +6,7 @@ namespace SParallelLaravel\Commands;
 
 use Illuminate\Console\Command;
 use RuntimeException;
-use SParallel\Contracts\TaskEventsBusInterface;
+use SParallel\Contracts\EventsBusInterface;
 use SParallel\Drivers\Process\ProcessDriver;
 use SParallel\Transport\ContextTransport;
 use SParallel\Transport\Serializer;
@@ -19,7 +19,7 @@ class HandleSerializedClosureCommand extends Command
 
     protected $description = 'Handle serialized closure';
 
-    public function handle(TaskEventsBusInterface $taskEventsBus): void
+    public function handle(EventsBusInterface $eventsBus): void
     {
         $context = ContextTransport::unSerialize(
             $_SERVER[ProcessDriver::SERIALIZED_CONTEXT_VARIABLE_NAME] ?? null
@@ -27,7 +27,7 @@ class HandleSerializedClosureCommand extends Command
 
         $driverName = ProcessDriver::DRIVER_NAME;
 
-        $taskEventsBus->starting(
+        $eventsBus->taskStarting(
             driverName: $driverName,
             context: $context
         );
@@ -37,7 +37,7 @@ class HandleSerializedClosureCommand extends Command
                 message: 'No closure found in $_SERVER variable.'
             );
 
-            $taskEventsBus->failed(
+            $eventsBus->taskFailed(
                 driverName: $driverName,
                 context: $context,
                 exception: $exception
@@ -54,7 +54,7 @@ class HandleSerializedClosureCommand extends Command
             } catch (Throwable $exception) {
                 fwrite(STDERR, TaskResultTransport::serialize(exception: $exception));
 
-                $taskEventsBus->failed(
+                $eventsBus->taskFailed(
                     driverName: $driverName,
                     context: $context,
                     exception: $exception
@@ -62,7 +62,7 @@ class HandleSerializedClosureCommand extends Command
             }
         }
 
-        $taskEventsBus->finished(
+        $eventsBus->taskFinished(
             driverName: $driverName,
             context: $context
         );

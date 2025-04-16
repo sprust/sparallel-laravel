@@ -9,7 +9,7 @@ use Illuminate\Support\ServiceProvider;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SParallel\Contracts\DriverInterface;
-use SParallel\Contracts\TaskEventsBusInterface;
+use SParallel\Contracts\EventsBusInterface;
 use SParallel\Drivers\Fork\ForkDriver;
 use SParallel\Drivers\Process\ProcessDriver;
 use SParallel\Drivers\Sync\SyncDriver;
@@ -24,7 +24,7 @@ class SParallelServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(Context::class);
-        $this->app->singleton(TaskEventsBusInterface::class, TaskEventsBus::class);
+        $this->app->singleton(EventsBusInterface::class, EventsBus::class);
         $this->app->singleton(DriverFactory::class);
     }
 
