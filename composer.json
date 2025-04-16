@@ -11,7 +11,7 @@
     "require": {
         "php": "^8.2",
         "laravel/framework": "^9.0 | ^10.0 | ^11.0",
-        "sparallel/sparallel": "dev-master"
+        "sparallel/sparallel": "^0.0.1"
     },
     "require-dev": {
         "phpunit/phpunit": "^11.5",
@@ -20,11 +20,6 @@
     "autoload": {
         "psr-4": {
             "SParallelLaravel\\": "src/SParallelLaravel"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "SParallelLaravel\\Tests\\": "tests"
         }
     },
     "extra": {

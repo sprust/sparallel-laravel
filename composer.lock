@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ba2eaa2d481c6502dc33ca6255345b97",
+    "content-hash": "f7294a40d1e9b496e9ab1f639a717a6e",
     "packages": [
         {
             "name": "brick/math",
@@ -3149,16 +3149,16 @@
         },
         {
             "name": "sparallel/sparallel",
-            "version": "dev-master",
+            "version": "v0.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sprust/sparallel.git",
-                "reference": "7fa14f89d4326222697ed103bc0c2cf6ee12f4d2"
+                "reference": "7758282c2a59797f5d46b095e92182c9d845cff9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sprust/sparallel/zipball/7fa14f89d4326222697ed103bc0c2cf6ee12f4d2",
-                "reference": "7fa14f89d4326222697ed103bc0c2cf6ee12f4d2",
+                "url": "https://api.github.com/repos/sprust/sparallel/zipball/7758282c2a59797f5d46b095e92182c9d845cff9",
+                "reference": "7758282c2a59797f5d46b095e92182c9d845cff9",
                 "shasum": ""
             },
             "require": {
@@ -3174,7 +3174,6 @@
                 "phpstan/phpstan": "^2.1",
                 "phpunit/phpunit": "^11.5"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -3194,9 +3193,9 @@
             "description": "Parallel PHP via processes",
             "support": {
                 "issues": "https://github.com/sprust/sparallel/issues",
-                "source": "https://github.com/sprust/sparallel/tree/master"
+                "source": "https://github.com/sprust/sparallel/tree/v0.0.1"
             },
-            "time": "2025-04-16T08:23:02+00:00"
+            "time": "2025-04-16T11:55:41+00:00"
         },
         {
             "name": "symfony/clock",
@@ -7448,9 +7447,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "sparallel/sparallel": 20
-    },
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
