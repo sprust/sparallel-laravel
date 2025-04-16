@@ -36,7 +36,7 @@ class EventsBus implements EventsBusInterface
         event(
             new SParallelTaskStartingEvent(
                 driverName: $driverName,
-                context: $context?->all()
+                context: $context
             )
         );
     }
@@ -46,7 +46,7 @@ class EventsBus implements EventsBusInterface
         event(
             new SParallelTaskFailedEvent(
                 driverName: $driverName,
-                context: $context?->all(),
+                context: $context,
                 exception: $exception
             )
         );
@@ -57,7 +57,7 @@ class EventsBus implements EventsBusInterface
         event(
             new SParallelTaskFinishedEvent(
                 driverName: $driverName,
-                context: $context?->all()
+                context: $context
             )
         );
     }
