@@ -9,6 +9,7 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use RuntimeException;
 use SParallel\Contracts\DriverInterface;
+use SParallel\Contracts\TaskEventsBusInterface;
 use SParallel\Drivers\Fork\ForkDriver;
 use SParallel\Drivers\Process\ProcessDriver;
 use SParallel\Drivers\Sync\SyncDriver;
@@ -17,8 +18,11 @@ use SParallelLaravel\Commands\HandleSerializedClosureCommand;
 
 class DriverFactory
 {
-    public function __construct(protected Application $app)
-    {
+    public function __construct(
+        protected Application $app,
+        protected Context $context,
+        protected TaskEventsBusInterface $taskEventsBus,
+    ) {
     }
 
     /**
@@ -29,14 +33,14 @@ class DriverFactory
      */
     public function get(string $driverClass): DriverInterface
     {
-        $context = $this->app->get(Context::class);
-
         return match ($driverClass) {
             SyncDriver::class => new SyncDriver(
-                context: $context,
+                context: $this->context,
+                taskEventsBus: $this->taskEventsBus
             ),
             ForkDriver::class => new ForkDriver(
-                context: $context,
+                context: $this->context,
+                taskEventsBus: $this->taskEventsBus
             ),
             ProcessDriver::class => new ProcessDriver(
                 scriptPath: sprintf(
@@ -44,7 +48,7 @@ class DriverFactory
                     base_path('artisan'),
                     $this->app->get(HandleSerializedClosureCommand::class)->getName()
                 ),
-                context: $context,
+                context: $this->context,
             ),
             default => throw new RuntimeException(
                 message: sprintf(
