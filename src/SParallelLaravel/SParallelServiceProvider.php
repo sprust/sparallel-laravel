@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SParallelLaravel;
 
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\ServiceProvider;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -27,6 +28,10 @@ class SParallelServiceProvider extends ServiceProvider
         $this->app->singleton(DriverFactory::class);
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     public function boot(): void
     {
         $this->commands([
@@ -41,6 +46,14 @@ class SParallelServiceProvider extends ServiceProvider
                 driver: $this->detectDriver($runningInConsole),
             )
         );
+
+        $events = $this->app->get(Dispatcher::class);
+
+        foreach (config('sparallel.listeners', []) as $eventClass => $listenerClasses) {
+            foreach ($listenerClasses as $listenerClass) {
+                $events->listen($eventClass, $listenerClass);
+            }
+        }
 
         if ($runningInConsole) {
             $this->publishes(
