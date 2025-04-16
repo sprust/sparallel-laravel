@@ -44,6 +44,7 @@ class SParallelServiceProvider extends ServiceProvider
             SParallelService::class,
             fn(): SParallelService => new SParallelService(
                 driver: $this->detectDriver($runningInConsole),
+                eventsBus: $this->app->get(EventsBusInterface::class),
             )
         );
 
