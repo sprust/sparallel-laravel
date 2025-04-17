@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ba2eaa2d481c6502dc33ca6255345b97",
+    "content-hash": "57f9d73e7308a671b410870e3127aba4",
     "packages": [
         {
             "name": "brick/math",
@@ -3149,7 +3149,7 @@
         },
         {
             "name": "sparallel/sparallel",
-            "version": "dev-master",
+            "version": "v0.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sprust/sparallel.git",
@@ -3174,7 +3174,6 @@
                 "phpstan/phpstan": "^2.1",
                 "phpunit/phpunit": "^11.5"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -3194,7 +3193,7 @@
             "description": "Parallel PHP via processes",
             "support": {
                 "issues": "https://github.com/sprust/sparallel/issues",
-                "source": "https://github.com/sprust/sparallel/tree/master"
+                "source": "https://github.com/sprust/sparallel/tree/v0.0.2"
             },
             "time": "2025-04-17T13:40:21+00:00"
         },
@@ -7448,9 +7447,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "sparallel/sparallel": 20
-    },
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
