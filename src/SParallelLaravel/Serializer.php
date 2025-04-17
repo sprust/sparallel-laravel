@@ -4,15 +4,21 @@ namespace SParallelLaravel;
 
 use Laravel\SerializableClosure\SerializableClosure;
 use SParallel\Contracts\SerializerInterface;
+use SParallel\Transport\OpisSerializer;
+use Throwable;
 
 class Serializer implements SerializerInterface
 {
+    public function __construct(protected OpisSerializer $opisSerializer)
+    {
+    }
+
     public function serialize(mixed $data): string
     {
         if (is_callable($data)) {
             return serialize(new SerializableClosure($data));
         } else {
-            return serialize($data);
+            return $this->opisSerializer->serialize($data);
         }
     }
 
@@ -22,12 +28,16 @@ class Serializer implements SerializerInterface
             return null;
         }
 
-        $unSerialized = unserialize($data);
+        try {
+            $unSerialized = unserialize($data);
 
-        if ($unSerialized instanceof SerializableClosure) {
-            return $unSerialized->getClosure();
+            if ($unSerialized instanceof SerializableClosure) {
+                return $unSerialized->getClosure();
+            }
+        } catch (Throwable) {
+            //
         }
 
-        return $unSerialized;
+        return $this->opisSerializer->unserialize($data);
     }
 }
