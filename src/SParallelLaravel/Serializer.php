@@ -3,14 +3,17 @@
 namespace SParallelLaravel;
 
 use Laravel\SerializableClosure\SerializableClosure;
-use RuntimeException;
 use SParallel\Contracts\SerializerInterface;
 
 class Serializer implements SerializerInterface
 {
     public function serialize(mixed $data): string
     {
-        return serialize(new SerializableClosure($data));
+        if (is_callable($data)) {
+            return serialize(new SerializableClosure($data));
+        } else {
+            return serialize($data);
+        }
     }
 
     public function unserialize(?string $data): mixed
@@ -25,8 +28,6 @@ class Serializer implements SerializerInterface
             return $unSerialized->getClosure();
         }
 
-        throw new RuntimeException(
-            "Expected SerializableClosure, got: " . (is_null($unSerialized) ? 'null' : gettype($unSerialized))
-        );
+        return $unSerialized;
     }
 }
