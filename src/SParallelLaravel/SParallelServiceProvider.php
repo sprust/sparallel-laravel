@@ -10,13 +10,16 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SParallel\Contracts\DriverInterface;
 use SParallel\Contracts\EventsBusInterface;
+use SParallel\Contracts\SerializerInterface;
 use SParallel\Drivers\Fork\ForkDriver;
 use SParallel\Drivers\Process\ProcessDriver;
 use SParallel\Drivers\Sync\SyncDriver;
 use SParallel\Objects\Context;
 use SParallel\Services\SParallelService;
+use SParallel\Transport\CallbackTransport;
+use SParallel\Transport\ContextTransport;
+use SParallel\Transport\ResultTransport;
 use SParallelLaravel\Commands\HandleSerializedClosureCommand;
-use SParallelLaravel\Drivers\DriverFactory;
 use SParallelLaravel\Drivers\ProcessWithForkInside\ProcessWithForkInsideDriver;
 
 class SParallelServiceProvider extends ServiceProvider
@@ -25,7 +28,7 @@ class SParallelServiceProvider extends ServiceProvider
     {
         $this->app->singleton(Context::class);
         $this->app->singleton(EventsBusInterface::class, EventsBus::class);
-        $this->app->singleton(DriverFactory::class);
+        $this->app->singleton(SerializerInterface::class, Serializer::class);
     }
 
     /**
@@ -34,9 +37,8 @@ class SParallelServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->commands([
-            HandleSerializedClosureCommand::class,
-        ]);
+        $this->registerTransports();
+        $this->registerDrivers();
 
         $runningInConsole = $this->app->runningInConsole();
 
@@ -57,6 +59,10 @@ class SParallelServiceProvider extends ServiceProvider
         }
 
         if ($runningInConsole) {
+            $this->commands([
+                HandleSerializedClosureCommand::class,
+            ]);
+
             $this->publishes(
                 paths: [
                     __DIR__ . '/../../config/sparallel.php' => config_path('sparallel.php'),
@@ -68,26 +74,44 @@ class SParallelServiceProvider extends ServiceProvider
         }
     }
 
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     */
+    private function registerTransports(): void
+    {
+        $this->app->singleton(CallbackTransport::class);
+        $this->app->singleton(ResultTransport::class);
+        $this->app->singleton(ContextTransport::class);
+    }
+
+    private function registerDrivers(): void
+    {
+        $this->app->singleton(SyncDriver::class);
+        $this->app->singleton(ForkDriver::class);
+        $this->app->singleton(
+            ProcessDriver::class,
+            static fn(): ProcessDriver => app(ProcessDriver::class, [
+                'scriptPath' => sprintf(
+                    '%s %s',
+                    base_path('artisan'),
+                    app(HandleSerializedClosureCommand::class)->getName()
+                ),
+            ])
+        );
+        $this->app->singleton(ProcessWithForkInsideDriver::class);
+    }
+
     private function detectDriver(bool $runningInConsole): DriverInterface
     {
-        $factory = $this->app->get(DriverFactory::class);
-
         if (!config('sparallel.async')) {
-            return $factory->get(SyncDriver::class);
+            return app(SyncDriver::class);
         }
 
         if ($runningInConsole) {
-            return $factory->get(ForkDriver::class);
+            return app(ForkDriver::class);
         }
 
         if (config('sparallel.use_fork_inside_process')) {
-            return $this->app->get(ProcessWithForkInsideDriver::class);
+            return app(ProcessWithForkInsideDriver::class);
         }
 
-        return $factory->get(ProcessDriver::class);
+        return app(ProcessDriver::class);
     }
 }

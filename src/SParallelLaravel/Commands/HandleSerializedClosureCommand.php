@@ -8,9 +8,9 @@ use Illuminate\Console\Command;
 use RuntimeException;
 use SParallel\Contracts\EventsBusInterface;
 use SParallel\Drivers\Process\ProcessDriver;
+use SParallel\Transport\CallbackTransport;
 use SParallel\Transport\ContextTransport;
-use SParallel\Transport\Serializer;
-use SParallel\Transport\TaskResultTransport;
+use SParallel\Transport\ResultTransport;
 use Throwable;
 
 class HandleSerializedClosureCommand extends Command
@@ -19,9 +19,13 @@ class HandleSerializedClosureCommand extends Command
 
     protected $description = 'Handle serialized closure';
 
-    public function handle(EventsBusInterface $eventsBus): void
-    {
-        $context = ContextTransport::unSerialize(
+    public function handle(
+        EventsBusInterface $eventsBus,
+        ContextTransport $contextTransport,
+        ResultTransport $resultTransport,
+        CallbackTransport $callbackTransport
+    ): void {
+        $context = $contextTransport->unserialize(
             $_SERVER[ProcessDriver::SERIALIZED_CONTEXT_VARIABLE_NAME] ?? null
         );
 
@@ -43,16 +47,16 @@ class HandleSerializedClosureCommand extends Command
                 exception: $exception
             );
 
-            fwrite(STDERR, TaskResultTransport::serialize(exception: $exception));
+            fwrite(STDERR, $resultTransport->serialize(exception: $exception));
         } else {
             try {
-                $closure = Serializer::unSerialize(
+                $closure = $callbackTransport->unserialize(
                     $_SERVER[ProcessDriver::SERIALIZED_CLOSURE_VARIABLE_NAME]
                 );
 
-                fwrite(STDOUT, TaskResultTransport::serialize(result: $closure()));
+                fwrite(STDOUT, $resultTransport->serialize(result: $closure()));
             } catch (Throwable $exception) {
-                fwrite(STDERR, TaskResultTransport::serialize(exception: $exception));
+                fwrite(STDERR, $resultTransport->serialize(exception: $exception));
 
                 $eventsBus->taskFailed(
                     driverName: $driverName,
