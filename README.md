@@ -13,14 +13,14 @@ SPARALLEL_USE_FORK_INSIDE_PROCESS=true
 ```php
 try {
     /** @var \SParallel\Objects\ResultsObject $results */
-    $results = app(\SParallel\Services\ParallelService::class)->wait(
+    $results = app(\SParallel\Services\SParallelService::class)->wait(
         callbacks: [
             'first'  => static fn() => 'first',
             'second' => static fn() => 'second',
         ],
         waitMicroseconds: 2_000_000, // 2 seconds
     );
-} catch (\SParallel\Exceptions\ParallelTimeoutException) {
+} catch (\SParallel\Exceptions\SParallelTimeoutException) {
     throw new RuntimeException('Timeout');
 }
 
