@@ -11,7 +11,7 @@
     "require": {
         "php": "^8.2",
         "laravel/framework": "^9.0 | ^10.0 | ^11.0",
-        "sparallel/sparallel": "^0.0.1"
+        "sparallel/sparallel": "dev-master"
     },
     "require-dev": {
         "phpunit/phpunit": "^11.5",
