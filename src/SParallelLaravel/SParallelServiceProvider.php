@@ -87,13 +87,17 @@ class SParallelServiceProvider extends ServiceProvider
         $this->app->singleton(ForkDriver::class);
         $this->app->singleton(
             ProcessDriver::class,
-            static fn(): ProcessDriver => app(ProcessDriver::class, [
-                'scriptPath' => sprintf(
+            static fn(): ProcessDriver => new ProcessDriver(
+                callbackTransport: app(CallbackTransport::class),
+                resultTransport: app(ResultTransport::class),
+                contextTransport: app(ContextTransport::class),
+                scriptPath: sprintf(
                     '%s %s',
                     base_path('artisan'),
                     app(HandleSerializedClosureCommand::class)->getName()
                 ),
-            ])
+                context: app(Context::class)
+            )
         );
         $this->app->singleton(ProcessWithForkInsideDriver::class);
     }
