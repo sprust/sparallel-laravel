@@ -1,5 +1,5 @@
 {
-    "name": "sparallel/sparallel-laravel",
+    "name": "sparallel/laravel",
     "description": "Parallel PHP via processes for Laravel",
     "license": "MIT",
     "authors": [
