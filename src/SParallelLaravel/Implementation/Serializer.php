@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SParallelLaravel\Implementation;
 
 use Laravel\SerializableClosure\SerializableClosure;
