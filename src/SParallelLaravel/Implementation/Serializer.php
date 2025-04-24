@@ -1,6 +1,8 @@
 <?php
 
-namespace SParallelLaravel;
+declare(strict_types=1);
+
+namespace SParallelLaravel\Implementation;
 
 use Laravel\SerializableClosure\SerializableClosure;
 use SParallel\Contracts\SerializerInterface;

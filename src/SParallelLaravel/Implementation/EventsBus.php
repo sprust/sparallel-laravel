@@ -2,13 +2,15 @@
 
 declare(strict_types=1);
 
-namespace SParallelLaravel;
+namespace SParallelLaravel\Implementation;
 
 use SParallel\Contracts\EventsBusInterface;
 use SParallel\Objects\Context;
 use SParallelLaravel\Events\SParallelFlowFailedEvent;
 use SParallelLaravel\Events\SParallelFlowFinishedEvent;
 use SParallelLaravel\Events\SParallelFlowStartingEvent;
+use SParallelLaravel\Events\SParallelProcessCreatedEvent;
+use SParallelLaravel\Events\SParallelProcessFinishedEvent;
 use SParallelLaravel\Events\SParallelTaskFailedEvent;
 use SParallelLaravel\Events\SParallelTaskFinishedEvent;
 use SParallelLaravel\Events\SParallelTaskStartingEvent;
@@ -58,6 +60,24 @@ class EventsBus implements EventsBusInterface
             new SParallelTaskFinishedEvent(
                 driverName: $driverName,
                 context: $context
+            )
+        );
+    }
+
+    public function processCreated(int $pid): void
+    {
+        event(
+            new SParallelProcessCreatedEvent(
+                pid: $pid
+            )
+        );
+    }
+
+    public function processFinished(int $pid): void
+    {
+        event(
+            new SParallelProcessFinishedEvent(
+                pid: $pid
             )
         );
     }
