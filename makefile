@@ -35,3 +35,6 @@ check:
 
 declare-strict:
 	grep -Lr "declare(strict_types=1);" ./src | grep .php
+
+test:
+	"$(PHP_CLI)" ./vendor/bin/phpunit tests/
