@@ -11,6 +11,6 @@ class ProcessScriptPathResolver implements ProcessScriptPathResolverInterface
 {
     public function get(): string
     {
-        return app(HandleProcessTaskCommand::class)->getName();
+        return base_path('artisan') . ' ' . app(HandleProcessTaskCommand::class)->getName();
     }
 }

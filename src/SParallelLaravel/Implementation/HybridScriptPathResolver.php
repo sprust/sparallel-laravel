@@ -11,6 +11,6 @@ class HybridScriptPathResolver implements HybridScriptPathResolverInterface
 {
     public function get(): string
     {
-        return app(HandleHybridProcessTaskCommand::class)->getName();
+        return base_path('artisan') . ' ' . app(HandleHybridProcessTaskCommand::class)->getName();
     }
 }
