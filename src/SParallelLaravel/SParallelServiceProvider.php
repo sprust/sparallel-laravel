@@ -13,8 +13,8 @@ use SParallel\Services\Callback\CallbackCaller;
 use SParallel\Contracts\ContextSetterInterface;
 use SParallel\Contracts\DriverInterface;
 use SParallel\Contracts\EventsBusInterface;
-use SParallel\Contracts\HybridScriptPathResolverInterface;
-use SParallel\Contracts\ProcessScriptPathResolverInterface;
+use SParallel\Contracts\HybridProcessCommandResolverInterface;
+use SParallel\Contracts\ProcessCommandResolverInterface;
 use SParallel\Contracts\SerializerInterface;
 use SParallel\Drivers\Fork\ForkDriver;
 use SParallel\Drivers\Hybrid\HybridDriver;
@@ -35,8 +35,8 @@ use SParallelLaravel\Commands\HandleHybridProcessTaskCommand;
 use SParallelLaravel\Commands\HandleProcessTaskCommand;
 use SParallelLaravel\Implementation\ContextSetter;
 use SParallelLaravel\Implementation\EventsBus;
-use SParallelLaravel\Implementation\HybridScriptPathResolver;
-use SParallelLaravel\Implementation\ProcessScriptPathResolver;
+use SParallelLaravel\Implementation\HybridProcessCommandResolver;
+use SParallelLaravel\Implementation\ProcessCommandResolver;
 use SParallelLaravel\Implementation\Serializer;
 
 class SParallelServiceProvider extends ServiceProvider
@@ -64,8 +64,8 @@ class SParallelServiceProvider extends ServiceProvider
         $this->app->singleton(SerializerInterface::class, Serializer::class);
         $this->app->singleton(ContextSetterInterface::class, ContextSetter::class);
         $this->app->singleton(CallbackCallerInterface::class, CallbackCaller::class);
-        $this->app->singleton(ProcessScriptPathResolverInterface::class, ProcessScriptPathResolver::class);
-        $this->app->singleton(HybridScriptPathResolverInterface::class, HybridScriptPathResolver::class);
+        $this->app->singleton(ProcessCommandResolverInterface::class, ProcessCommandResolver::class);
+        $this->app->singleton(HybridProcessCommandResolverInterface::class, HybridProcessCommandResolver::class);
 
         // services
         $this->app->singleton(ForkHandler::class);

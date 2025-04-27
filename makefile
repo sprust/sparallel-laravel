@@ -13,16 +13,17 @@ composer:
 	"$(PHP_CLI)" composer ${c}
 
 test:
-	"$(PHP_CLI)" ./vendor/bin/phpunit \
+	"$(PHP_CLI)" ./vendor/bin/phpunit tests/ \
+		-d memory_limit=512M \
 		--colors=auto \
 		--testdox \
-  		--display-incomplete \
-  		--display-skipped \
-  		--display-deprecations \
-  		--display-phpunit-deprecations \
-  		--display-errors \
-  		--display-notices \
-  		--display-warnings \
+		--display-incomplete \
+		--display-skipped \
+		--display-deprecations \
+		--display-phpunit-deprecations \
+		--display-errors \
+		--display-notices \
+		--display-warnings \
 		tests ${c}
 
 phpstan:
@@ -35,6 +36,3 @@ check:
 
 declare-strict:
 	grep -Lr "declare(strict_types=1);" ./src | grep .php
-
-test:
-	"$(PHP_CLI)" ./vendor/bin/phpunit tests/
