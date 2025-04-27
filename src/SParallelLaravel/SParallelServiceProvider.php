@@ -9,8 +9,8 @@ use Illuminate\Support\ServiceProvider;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SParallel\Contracts\CallbackCallerInterface;
+use SParallel\Contracts\ContextResolverInterface;
 use SParallel\Services\Callback\CallbackCaller;
-use SParallel\Contracts\ContextSetterInterface;
 use SParallel\Contracts\DriverInterface;
 use SParallel\Contracts\EventsBusInterface;
 use SParallel\Contracts\HybridProcessCommandResolverInterface;
@@ -33,7 +33,7 @@ use SParallel\Transport\ProcessMessagesTransport;
 use SParallel\Transport\ResultTransport;
 use SParallelLaravel\Commands\HandleHybridProcessTaskCommand;
 use SParallelLaravel\Commands\HandleProcessTaskCommand;
-use SParallelLaravel\Implementation\ContextSetter;
+use SParallelLaravel\Implementation\ContextResolver;
 use SParallelLaravel\Implementation\EventsBus;
 use SParallelLaravel\Implementation\HybridProcessCommandResolver;
 use SParallelLaravel\Implementation\ProcessCommandResolver;
@@ -41,9 +41,15 @@ use SParallelLaravel\Implementation\Serializer;
 
 class SParallelServiceProvider extends ServiceProvider
 {
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     public function register(): void
     {
-        $this->app->singleton(Context::class);
+        $this->app->singleton(ContextResolverInterface::class, ContextResolver::class);
+
+        $this->app->get(ContextResolverInterface::class)->set(new Context());
     }
 
     /**
@@ -62,7 +68,6 @@ class SParallelServiceProvider extends ServiceProvider
         // implementations
         $this->app->singleton(EventsBusInterface::class, EventsBus::class);
         $this->app->singleton(SerializerInterface::class, Serializer::class);
-        $this->app->singleton(ContextSetterInterface::class, ContextSetter::class);
         $this->app->singleton(CallbackCallerInterface::class, CallbackCaller::class);
         $this->app->singleton(ProcessCommandResolverInterface::class, ProcessCommandResolver::class);
         $this->app->singleton(HybridProcessCommandResolverInterface::class, HybridProcessCommandResolver::class);
