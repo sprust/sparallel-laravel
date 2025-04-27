@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace SParallelLaravel\Implementation;
 
 use SParallel\Contracts\ContextSetterInterface;
-use SParallel\Objects\Context;
+use SParallel\Services\Context;
 
 class ContextSetter implements ContextSetterInterface
 {
