@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace SParallelLaravel\Implementation;
 
 use SParallel\Contracts\EventsBusInterface;
-use SParallel\Objects\Context;
+use SParallel\Services\Context;
 use SParallelLaravel\Events\SParallelFlowFailedEvent;
 use SParallelLaravel\Events\SParallelFlowFinishedEvent;
 use SParallelLaravel\Events\SParallelFlowStartingEvent;

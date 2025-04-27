@@ -6,7 +6,7 @@ namespace SParallelLaravel\Commands;
 
 use Illuminate\Console\Command;
 use SParallel\Drivers\Hybrid\HybridProcessHandler;
-use SParallel\Exceptions\SParallelTimeoutException;
+use SParallel\Exceptions\CancelerException;
 
 class HandleHybridProcessTaskCommand extends Command
 {
@@ -15,7 +15,7 @@ class HandleHybridProcessTaskCommand extends Command
     protected $description = 'Handle task of hybrid driver';
 
     /**
-     * @throws SParallelTimeoutException
+     * @throws CancelerException
      */
     public function handle(HybridProcessHandler $hybridProcessHandler): void
     {
