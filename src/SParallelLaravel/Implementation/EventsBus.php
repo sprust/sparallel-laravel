@@ -18,19 +18,19 @@ use Throwable;
 
 class EventsBus implements EventsBusInterface
 {
-    public function flowStarting(): void
+    public function flowStarting(Context $context): void
     {
-        event(new SParallelFlowStartingEvent());
+        event(new SParallelFlowStartingEvent(context: $context));
     }
 
-    public function flowFailed(Throwable $exception): void
+    public function flowFailed(Context $context, Throwable $exception): void
     {
-        event(new SParallelFlowFailedEvent(exception: $exception));
+        event(new SParallelFlowFailedEvent(context: $context, exception: $exception));
     }
 
-    public function flowFinished(): void
+    public function flowFinished(Context $context): void
     {
-        event(new SParallelFlowFinishedEvent());
+        event(new SParallelFlowFinishedEvent(context: $context));
     }
 
     public function taskStarting(string $driverName, ?Context $context): void
