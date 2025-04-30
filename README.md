@@ -6,9 +6,8 @@ php artisan vendor:publish --tag=sparallel-laravel
 
 ```dotenv
 # sparallel
-SPARALLEL_ASYNC=true
-SPARALLEL_USE_HYBRID_ALWAYS=true
-SPARALLEL_USE_FORK_INSIDE_PROCESS=true
+SPARALLEL_MODE=sync
+SPARALLEL_TASK_MEMORY_LIMIT_MB=128
 ```
 
 ## example ##
@@ -21,10 +20,10 @@ $callbacks = [
     'first'  => static fn() => 'first',
     'second' => static fn() => throw new RuntimeException('second'),
     'third'  => static function(
-        \SParallel\Services\Canceler $canceler,
+        \SParallel\Services\Context $context,
         \Illuminate\Contracts\Events\Dispatcher $dispatcher // DI support
     ) {
-        $canceler->check();
+        $context->check();
         
         return 'third';
     },

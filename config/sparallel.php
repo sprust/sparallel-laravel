@@ -20,7 +20,7 @@ return [
      */
     'mode' => env('SPARALLEL_MODE', 'sync'),
 
-    'task_memory_limit_mb' => (int) env('SPARALLEL_TASK_MEMORY_LIMIT', 128),
+    'task_memory_limit_mb' => (int) env('SPARALLEL_TASK_MEMORY_LIMIT_MB', 128),
 
     /**
      * key - event class
