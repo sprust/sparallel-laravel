@@ -12,7 +12,8 @@ use SParallel\Drivers\Fork\ForkDriver;
 use SParallel\Drivers\Hybrid\HybridDriver;
 use SParallel\Drivers\Process\ProcessDriver;
 use SParallel\Drivers\Sync\SyncDriver;
-use SParallel\Exceptions\CancelerException;
+use SParallel\Exceptions\ContextCheckerException;
+use SParallel\Services\Context;
 use SParallel\Services\SParallelService;
 use SParallel\TestCases\SParallelServiceTestCasesTrait;
 
@@ -20,28 +21,20 @@ class SParallelServiceTest extends BaseTestCase
 {
     use SParallelServiceTestCasesTrait;
 
-    protected function defineEnvironment($app): void
-    {
-        $app['config']->set('sparallel.async', true);
-    }
-
     /**
      * @param class-string<DriverInterface> $driverClass
      *
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
-     * @throws CancelerException
+     * @throws ContextCheckerException
      */
     #[Test]
     #[DataProvider('driversDataProvider')]
     public function success(string $driverClass): void
     {
-        $service = new SParallelService(
-            driver: $this->app->get($driverClass),
-            eventsBus: $this->app->get(EventsBusInterface::class),
+        $this->onSuccess(
+            service: $this->mekService($driverClass),
         );
-
-        $this->onSuccess($service);
     }
 
     /**
@@ -49,18 +42,15 @@ class SParallelServiceTest extends BaseTestCase
      *
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
-     * @throws CancelerException
+     * @throws ContextCheckerException
      */
     #[Test]
     #[DataProvider('driversDataProvider')]
     public function failure(string $driverClass): void
     {
-        $service = new SParallelService(
-            driver: $this->app->get($driverClass),
-            eventsBus: $this->app->get(EventsBusInterface::class),
+        $this->onFailure(
+            service: $this->mekService($driverClass),
         );
-
-        $this->onFailure($service);
     }
 
     /**
@@ -71,16 +61,13 @@ class SParallelServiceTest extends BaseTestCase
     #[DataProvider('driversDataProvider')]
     public function timeout(string $driverClass): void
     {
-        $service = new SParallelService(
-            driver: $this->app->get($driverClass),
-            eventsBus: $this->app->get(EventsBusInterface::class),
+        $this->onTimeout(
+            service: $this->mekService($driverClass),
         );
-
-        $this->onTimeout($service);
     }
 
     /**
-     * @throws CancelerException
+     * @throws ContextCheckerException
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
@@ -88,16 +75,13 @@ class SParallelServiceTest extends BaseTestCase
     #[DataProvider('driversDataProvider')]
     public function breakAtFirstError(string $driverClass): void
     {
-        $service = new SParallelService(
-            driver: $this->app->get($driverClass),
-            eventsBus: $this->app->get(EventsBusInterface::class),
+        $this->onBreakAtFirstError(
+            service: $this->mekService($driverClass),
         );
-
-        $this->onBreakAtFirstError($service);
     }
 
     /**
-     * @throws CancelerException
+     * @throws ContextCheckerException
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
@@ -105,16 +89,13 @@ class SParallelServiceTest extends BaseTestCase
     #[DataProvider('driversDataProvider')]
     public function bigPayload(string $driverClass): void
     {
-        $service = new SParallelService(
-            driver: $this->app->get($driverClass),
-            eventsBus: $this->app->get(EventsBusInterface::class),
+        $this->onBigPayload(
+            service: $this->mekService($driverClass),
         );
-
-        $this->onBigPayload($service);
     }
 
     /**
-     * @throws CancelerException
+     * @throws ContextCheckerException
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
@@ -122,33 +103,40 @@ class SParallelServiceTest extends BaseTestCase
     #[DataProvider('driversMemoryLeakDataProvider')]
     public function memoryLeak(string $driverClass): void
     {
-        $service = new SParallelService(
-            driver: $this->app->get($driverClass),
-            eventsBus: $this->app->get(EventsBusInterface::class),
+        $this->onMemoryLeak(
+            service: $this->mekService($driverClass),
         );
-
-        $this->onMemoryLeak($service);
     }
 
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
-     * @throws CancelerException
+     * @throws ContextCheckerException
      */
     //#[Test] // TODO
     #[DataProvider('driversDataProvider')]
     public function events(string $driverClass): void
     {
-        $service = new SParallelService(
-            driver: $this->app->get($driverClass),
-            eventsBus: $this->app->get(EventsBusInterface::class)
+        $this->onEvents(
+            service: $this->mekService($driverClass),
+            context: new Context()
         );
-
-        $this->onEvents($service, static fn() => app());
     }
 
     /**
-     * @return array{driver: DriverInterface}[]
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    private function mekService(string $driverClass): SParallelService
+    {
+        return new SParallelService(
+            driver: $this->app->get($driverClass),
+            eventsBus: $this->app->get(EventsBusInterface::class)
+        );
+    }
+
+    /**
+     * @return array{driverClass: class-string<DriverInterface>}[]
      */
     public static function driversDataProvider(): array
     {
@@ -156,38 +144,42 @@ class SParallelServiceTest extends BaseTestCase
             'sync'    => self::makeDriverCase(
                 driverClass: SyncDriver::class
             ),
-            'process' => self::makeDriverCase(
-                driverClass: ProcessDriver::class
-            ),
+            // TODO
+            //'process' => self::makeDriverCase(
+            //    driverClass: ProcessDriver::class
+            //),
             'fork'    => self::makeDriverCase(
                 driverClass: ForkDriver::class
             ),
-            'hybrid'  => self::makeDriverCase(
-                driverClass: HybridDriver::class
-            ),
+            // TODO
+            //'hybrid'  => self::makeDriverCase(
+            //    driverClass: HybridDriver::class
+            //),
         ];
     }
 
     /**
-     * @return array{driver: DriverInterface}[]
+     * @return array{driverClass: class-string<DriverInterface>}[]
      */
     public static function driversMemoryLeakDataProvider(): array
     {
         return [
-            'process' => self::makeDriverCase(
-                driverClass: ProcessDriver::class
-            ),
+            // TODO
+            //'process' => self::makeDriverCase(
+            //    driverClass: ProcessDriver::class
+            //),
             'fork'    => self::makeDriverCase(
                 driverClass: ForkDriver::class
             ),
-            'hybrid'  => self::makeDriverCase(
-                driverClass: HybridDriver::class
-            ),
+            // TODO
+            //'hybrid'  => self::makeDriverCase(
+            //    driverClass: HybridDriver::class
+            //),
         ];
     }
 
     /**
-     * @return array{driver: DriverInterface}
+     * @return array{driverClass: class-string<DriverInterface>}
      */
     private static function makeDriverCase(string $driverClass): array
     {

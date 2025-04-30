@@ -12,22 +12,19 @@ use SParallelLaravel\Listeners\DBReconnectAtTaskStartingListener;
 
 return [
     /**
-     * false - Use sync driver
-     * true - Use async driver via Fork or/and Process
+     * sync - Use Sync driver
+     * process - Use Process driver always
+     * hybrid - Use Hybrid driver always
+     * process_fork - Use Fork driver if console else Process driver
+     * hybrid_fork - Use Fork driver if console else Hybrid driver
      */
-    'async'                   => (bool) env('SPARALLEL_ASYNC', true),
-
-    /**
-     * false - Use Process driver if running not in console
-     * true - Use many forks inside one process instead many processes
-     */
-    'use_fork_inside_process' => (bool) env('SPARALLEL_USE_FORK_INSIDE_PROCESS', true),
+    'mode'      => env('SPARALLEL_MODE', 'sync'),
 
     /**
      * key - event class
      * value - listener classes
      */
-    'listeners'               => [
+    'listeners' => [
         SParallelFlowStartingEvent::class => [],
         SParallelFlowFailedEvent::class   => [
             LogSParallelFlowFailedListener::class,

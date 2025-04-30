@@ -7,6 +7,7 @@ php artisan vendor:publish --tag=sparallel-laravel
 ```dotenv
 # sparallel
 SPARALLEL_ASYNC=true
+SPARALLEL_USE_HYBRID_ALWAYS=true
 SPARALLEL_USE_FORK_INSIDE_PROCESS=true
 ```
 

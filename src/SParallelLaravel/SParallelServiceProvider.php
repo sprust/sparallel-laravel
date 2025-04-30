@@ -67,19 +67,35 @@ class SParallelServiceProvider extends ServiceProvider
         $this->app->singleton(
             DriverInterface::class,
             static function (): DriverInterface {
-                if (!config('sparallel.async')) {
+                $mode = strtolower(config('sparallel.mode', 'sync'));
+
+                if ($mode === 'sync') {
                     return app(SyncDriver::class);
                 }
 
-                if (app()->runningInConsole()) {
-                    return app(ForkDriver::class);
+                if ($mode === 'process') {
+                    return app(ProcessDriver::class);
                 }
 
-                if (config('sparallel.use_fork_inside_process')) {
+                if ($mode === 'hybrid') {
                     return app(HybridDriver::class);
                 }
 
-                return app(ProcessDriver::class);
+                if ($mode === 'process_fork') {
+                    return app()->runningInConsole()
+                        ? app(ForkDriver::class)
+                        : app(ProcessDriver::class);
+                }
+
+                if ($mode === 'hybrid_fork') {
+                    return app()->runningInConsole()
+                        ? app(ForkDriver::class)
+                        : app(HybridDriver::class);
+                }
+
+                logger()->warning("Unknown sparallel mode: $mode. Use 'sync' mode.");
+
+                return app(SyncDriver::class);
             }
         );
 
