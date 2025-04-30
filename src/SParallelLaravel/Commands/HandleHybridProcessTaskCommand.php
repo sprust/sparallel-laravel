@@ -6,7 +6,7 @@ namespace SParallelLaravel\Commands;
 
 use Illuminate\Console\Command;
 use SParallel\Drivers\Hybrid\HybridProcessHandler;
-use SParallel\Exceptions\CancelerException;
+use SParallel\Exceptions\ContextCheckerException;
 
 class HandleHybridProcessTaskCommand extends Command
 {
@@ -15,7 +15,7 @@ class HandleHybridProcessTaskCommand extends Command
     protected $description = 'Handle task of hybrid driver';
 
     /**
-     * @throws CancelerException
+     * @throws ContextCheckerException
      */
     public function handle(HybridProcessHandler $hybridProcessHandler): void
     {

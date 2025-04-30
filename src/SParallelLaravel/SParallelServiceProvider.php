@@ -9,8 +9,6 @@ use Illuminate\Support\ServiceProvider;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SParallel\Contracts\CallbackCallerInterface;
-use SParallel\Contracts\ContextResolverInterface;
-use SParallel\Services\Callback\CallbackCaller;
 use SParallel\Contracts\DriverInterface;
 use SParallel\Contracts\EventsBusInterface;
 use SParallel\Contracts\HybridProcessCommandResolverInterface;
@@ -20,20 +18,18 @@ use SParallel\Drivers\Fork\ForkDriver;
 use SParallel\Drivers\Hybrid\HybridDriver;
 use SParallel\Drivers\Process\ProcessDriver;
 use SParallel\Drivers\Sync\SyncDriver;
-use SParallel\Services\Context;
+use SParallel\Services\Callback\CallbackCaller;
 use SParallel\Services\Fork\ForkHandler;
 use SParallel\Services\Fork\ForkService;
 use SParallel\Services\Process\ProcessService;
 use SParallel\Services\Socket\SocketService;
 use SParallel\Services\SParallelService;
 use SParallel\Transport\CallbackTransport;
-use SParallel\Transport\CancelerTransport;
 use SParallel\Transport\ContextTransport;
 use SParallel\Transport\ProcessMessagesTransport;
 use SParallel\Transport\ResultTransport;
 use SParallelLaravel\Commands\HandleHybridProcessTaskCommand;
 use SParallelLaravel\Commands\HandleProcessTaskCommand;
-use SParallelLaravel\Implementation\ContextResolver;
 use SParallelLaravel\Implementation\EventsBus;
 use SParallelLaravel\Implementation\HybridProcessCommandResolver;
 use SParallelLaravel\Implementation\ProcessCommandResolver;
@@ -45,24 +41,12 @@ class SParallelServiceProvider extends ServiceProvider
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function register(): void
-    {
-        $this->app->singleton(ContextResolverInterface::class, ContextResolver::class);
-
-        $this->app->get(ContextResolverInterface::class)->set(new Context());
-    }
-
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     */
     public function boot(): void
     {
         // transports
         $this->app->singleton(CallbackTransport::class);
         $this->app->singleton(ResultTransport::class);
         $this->app->singleton(ContextTransport::class);
-        $this->app->singleton(CancelerTransport::class);
         $this->app->singleton(ProcessMessagesTransport::class);
 
         // implementations

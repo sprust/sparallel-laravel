@@ -6,7 +6,7 @@ namespace SParallelLaravel\Commands;
 
 use Illuminate\Console\Command;
 use SParallel\Drivers\Process\ProcessHandler;
-use SParallel\Exceptions\CancelerException;
+use SParallel\Exceptions\ContextCheckerException;
 
 class HandleProcessTaskCommand extends Command
 {
@@ -15,7 +15,7 @@ class HandleProcessTaskCommand extends Command
     protected $description = 'Handle task of process driver';
 
     /**
-     * @throws CancelerException
+     * @throws ContextCheckerException
      */
     public function handle(ProcessHandler $processHandler): void
     {
