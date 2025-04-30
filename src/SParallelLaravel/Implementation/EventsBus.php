@@ -33,7 +33,7 @@ class EventsBus implements EventsBusInterface
         event(new SParallelFlowFinishedEvent(context: $context));
     }
 
-    public function taskStarting(string $driverName, ?Context $context): void
+    public function taskStarting(string $driverName, Context $context): void
     {
         event(
             new SParallelTaskStartingEvent(
@@ -43,7 +43,7 @@ class EventsBus implements EventsBusInterface
         );
     }
 
-    public function taskFailed(string $driverName, ?Context $context, Throwable $exception): void
+    public function taskFailed(string $driverName, Context $context, Throwable $exception): void
     {
         event(
             new SParallelTaskFailedEvent(
@@ -54,7 +54,7 @@ class EventsBus implements EventsBusInterface
         );
     }
 
-    public function taskFinished(string $driverName, ?Context $context): void
+    public function taskFinished(string $driverName, Context $context): void
     {
         event(
             new SParallelTaskFinishedEvent(

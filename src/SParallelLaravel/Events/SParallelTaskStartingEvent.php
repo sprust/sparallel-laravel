@@ -10,7 +10,7 @@ readonly class SParallelTaskStartingEvent
 {
     public function __construct(
         public string $driverName,
-        public ?Context $context,
+        public Context $context,
     ) {
     }
 }

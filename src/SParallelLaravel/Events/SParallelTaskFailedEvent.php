@@ -11,7 +11,7 @@ readonly class SParallelTaskFailedEvent
 {
     public function __construct(
         public string $driverName,
-        public ?Context $context,
+        public Context $context,
         public Throwable $exception
     ) {
     }
