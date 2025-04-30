@@ -15,10 +15,17 @@ class HybridProcessCommandResolver implements HybridProcessCommandResolverInterf
 {
     public function get(): string
     {
+        $memoryLimitMb = (int) config('sparallel.task_memory_limit_mb');
+
+        if ($memoryLimitMb <= 0) {
+            $memoryLimitMb = 128;
+        }
+
         return sprintf(
-            'cd %s && %s %s %s',
+            'cd %s && %s -d memory_limit=%dM %s %s',
             base_path(),
             (new PhpExecutableFinder())->find(false),
+            $memoryLimitMb,
             artisan_binary(),
             app(HandleHybridProcessTaskCommand::class)->getName()
         );

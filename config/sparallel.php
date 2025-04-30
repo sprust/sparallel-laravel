@@ -18,13 +18,15 @@ return [
      * process_fork - Use Fork driver if console else Process driver
      * hybrid_fork - Use Fork driver if console else Hybrid driver
      */
-    'mode'      => env('SPARALLEL_MODE', 'sync'),
+    'mode' => env('SPARALLEL_MODE', 'sync'),
+
+    'task_memory_limit_mb' => (int) env('SPARALLEL_TASK_MEMORY_LIMIT', 128),
 
     /**
      * key - event class
      * value - listener classes
      */
-    'listeners' => [
+    'listeners'            => [
         SParallelFlowStartingEvent::class => [],
         SParallelFlowFailedEvent::class   => [
             LogSParallelFlowFailedListener::class,
