@@ -2,19 +2,22 @@
 
 namespace SParallelLaravel\Tests;
 
+use Illuminate\Support\Facades\Event;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use RuntimeException;
 use SParallel\Contracts\DriverInterface;
 use SParallel\Contracts\EventsBusInterface;
 use SParallel\Drivers\Fork\ForkDriver;
-use SParallel\Drivers\Hybrid\HybridDriver;
-use SParallel\Drivers\Process\ProcessDriver;
 use SParallel\Drivers\Sync\SyncDriver;
 use SParallel\Exceptions\ContextCheckerException;
+use SParallel\Services\Context;
 use SParallel\Services\SParallelService;
 use SParallel\TestCases\SParallelServiceTestCasesTrait;
+use SParallelLaravel\Events\SParallelFlowFailedEvent;
+use SParallelLaravel\Events\SParallelFlowStartingEvent;
 
 class SParallelServiceTest extends BaseTestCase
 {
@@ -32,7 +35,7 @@ class SParallelServiceTest extends BaseTestCase
     public function success(string $driverClass): void
     {
         $this->onSuccess(
-            service: $this->mekService($driverClass),
+            service: $this->makeService($driverClass),
         );
     }
 
@@ -48,7 +51,7 @@ class SParallelServiceTest extends BaseTestCase
     public function failure(string $driverClass): void
     {
         $this->onFailure(
-            service: $this->mekService($driverClass),
+            service: $this->makeService($driverClass),
         );
     }
 
@@ -61,7 +64,7 @@ class SParallelServiceTest extends BaseTestCase
     public function timeout(string $driverClass): void
     {
         $this->onTimeout(
-            service: $this->mekService($driverClass),
+            service: $this->makeService($driverClass),
         );
     }
 
@@ -75,7 +78,7 @@ class SParallelServiceTest extends BaseTestCase
     public function breakAtFirstError(string $driverClass): void
     {
         $this->onBreakAtFirstError(
-            service: $this->mekService($driverClass),
+            service: $this->makeService($driverClass),
         );
     }
 
@@ -89,7 +92,7 @@ class SParallelServiceTest extends BaseTestCase
     public function bigPayload(string $driverClass): void
     {
         $this->onBigPayload(
-            service: $this->mekService($driverClass),
+            service: $this->makeService($driverClass),
         );
     }
 
@@ -103,21 +106,124 @@ class SParallelServiceTest extends BaseTestCase
     public function memoryLeak(string $driverClass): void
     {
         $this->onMemoryLeak(
-            service: $this->mekService($driverClass),
+            service: $this->makeService($driverClass),
         );
     }
 
-    // TODO: events test
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws ContextCheckerException
+     */
+    #[Test]
+    #[DataProvider('driversDataProvider')]
+    public function eventsSuccess(string $driverClass): void
+    {
+        Event::fake();
+
+        $callbacks = [
+            'first'  => static fn(Context $context) => uniqid(),
+            'second' => static fn(Context $context) => uniqid(),
+        ];
+
+        $callbacksCount = count($callbacks);
+
+        $service = $this->makeService($driverClass);
+
+        $results = $service->wait(
+            callbacks: $callbacks,
+            timeoutSeconds: 1,
+        );
+
+        self::assertTrue($results->isFinished());
+        self::assertFalse($results->hasFailed());
+        self::assertTrue($results->count() === $callbacksCount);
+
+        /**
+         * @var array<string, int> $eventsCounts
+         */
+        $eventsCounts = array_map(
+            static fn($dispatchedEvent) => count($dispatchedEvent),
+            Event::dispatchedEvents()
+        );
+
+        $this->assertEventsCount($eventsCounts, SParallelFlowStartingEvent::class, 1);
+        $this->assertEventsCount($eventsCounts, SParallelFlowFailedEvent::class, 0);
+        $this->assertEventsCount($eventsCounts, SParallelFlowStartingEvent::class, 1);
+        // TODO: background tasks
+        //$this->assertEventsCount($eventsCounts, SParallelTaskFailedEvent::class, 0);
+        //$this->assertEventsCount($eventsCounts, SParallelTaskFinishedEvent::class, 2);
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws ContextCheckerException
+     */
+    #[Test]
+    #[DataProvider('driversDataProvider')]
+    public function eventsFailed(string $driverClass): void
+    {
+        Event::fake();
+
+        $callbacks = [
+            'first'  => static fn(Context $context) => throw new RuntimeException('first'),
+            'second' => static fn(Context $context) => throw new RuntimeException('second'),
+        ];
+
+        $callbacksCount = count($callbacks);
+
+        $service = $this->makeService($driverClass);
+
+        $results = $service->wait(
+            callbacks: $callbacks,
+            timeoutSeconds: 1,
+        );
+
+        self::assertTrue($results->isFinished());
+        self::assertTrue($results->hasFailed());
+        self::assertTrue($results->count() === $callbacksCount);
+
+        /**
+         * @var array<string, int> $eventsCounts
+         */
+        $eventsCounts = array_map(
+            static fn($dispatchedEvent) => count($dispatchedEvent),
+            Event::dispatchedEvents()
+        );
+
+        $this->assertEventsCount($eventsCounts, SParallelFlowStartingEvent::class, 1);
+        $this->assertEventsCount($eventsCounts, SParallelFlowFailedEvent::class, 0);
+        $this->assertEventsCount($eventsCounts, SParallelFlowStartingEvent::class, 1);
+        // TODO: background tasks
+        //$this->assertEventsCount($eventsCounts, SParallelTaskFailedEvent::class, 0);
+        //$this->assertEventsCount($eventsCounts, SParallelTaskFinishedEvent::class, 2);
+    }
 
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    private function mekService(string $driverClass): SParallelService
+    private function makeService(string $driverClass): SParallelService
     {
         return new SParallelService(
             driver: $this->app->get($driverClass),
             eventsBus: $this->app->get(EventsBusInterface::class)
+        );
+    }
+
+    /**
+     * @param array<class-string<object>, int> $eventsCounts
+     */
+    private function assertEventsCount(array $eventsCounts, string $eventClass, int $expectedCount): void
+    {
+        $currentCount = $eventsCounts[$eventClass] ?? 0;
+
+        self::assertEquals(
+            $expectedCount,
+            $currentCount,
+            "Expected [$eventClass] events count: $expectedCount, got: $currentCount"
         );
     }
 
@@ -127,14 +233,14 @@ class SParallelServiceTest extends BaseTestCase
     public static function driversDataProvider(): array
     {
         return [
-            'sync'    => self::makeDriverCase(
+            'sync' => self::makeDriverCase(
                 driverClass: SyncDriver::class
             ),
             // TODO
             //'process' => self::makeDriverCase(
             //    driverClass: ProcessDriver::class
             //),
-            'fork'    => self::makeDriverCase(
+            'fork' => self::makeDriverCase(
                 driverClass: ForkDriver::class
             ),
             // TODO
@@ -154,7 +260,7 @@ class SParallelServiceTest extends BaseTestCase
             //'process' => self::makeDriverCase(
             //    driverClass: ProcessDriver::class
             //),
-            'fork'    => self::makeDriverCase(
+            'fork' => self::makeDriverCase(
                 driverClass: ForkDriver::class
             ),
             // TODO
