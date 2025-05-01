@@ -3153,12 +3153,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sprust/sparallel.git",
-                "reference": "0b2c00f36f677d69e80321a58ba96110fe2ef4ec"
+                "reference": "bfcaea88e40b0aad2d3e1c653f84a9ab71d4910a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sprust/sparallel/zipball/0b2c00f36f677d69e80321a58ba96110fe2ef4ec",
-                "reference": "0b2c00f36f677d69e80321a58ba96110fe2ef4ec",
+                "url": "https://api.github.com/repos/sprust/sparallel/zipball/bfcaea88e40b0aad2d3e1c653f84a9ab71d4910a",
+                "reference": "bfcaea88e40b0aad2d3e1c653f84a9ab71d4910a",
                 "shasum": ""
             },
             "require": {
@@ -3196,7 +3196,7 @@
                 "issues": "https://github.com/sprust/sparallel/issues",
                 "source": "https://github.com/sprust/sparallel/tree/master"
             },
-            "time": "2025-04-30T16:53:02+00:00"
+            "time": "2025-05-01T10:26:37+00:00"
         },
         {
             "name": "symfony/clock",

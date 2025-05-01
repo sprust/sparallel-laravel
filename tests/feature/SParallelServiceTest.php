@@ -13,7 +13,6 @@ use SParallel\Drivers\Hybrid\HybridDriver;
 use SParallel\Drivers\Process\ProcessDriver;
 use SParallel\Drivers\Sync\SyncDriver;
 use SParallel\Exceptions\ContextCheckerException;
-use SParallel\Services\Context;
 use SParallel\Services\SParallelService;
 use SParallel\TestCases\SParallelServiceTestCasesTrait;
 
@@ -108,20 +107,7 @@ class SParallelServiceTest extends BaseTestCase
         );
     }
 
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     * @throws ContextCheckerException
-     */
-    //#[Test] // TODO
-    #[DataProvider('driversDataProvider')]
-    public function events(string $driverClass): void
-    {
-        $this->onEvents(
-            service: $this->mekService($driverClass),
-            context: new Context()
-        );
-    }
+    // TODO: events test
 
     /**
      * @throws ContainerExceptionInterface
