@@ -11,6 +11,8 @@ use RuntimeException;
 use SParallel\Contracts\DriverInterface;
 use SParallel\Contracts\EventsBusInterface;
 use SParallel\Drivers\Fork\ForkDriver;
+use SParallel\Drivers\Hybrid\HybridDriver;
+use SParallel\Drivers\Process\ProcessDriver;
 use SParallel\Drivers\Sync\SyncDriver;
 use SParallel\Exceptions\ContextCheckerException;
 use SParallel\Services\Context;
@@ -233,20 +235,18 @@ class SParallelServiceTest extends BaseTestCase
     public static function driversDataProvider(): array
     {
         return [
-            'sync' => self::makeDriverCase(
+            'sync'    => self::makeDriverCase(
                 driverClass: SyncDriver::class
             ),
-            // TODO
-            //'process' => self::makeDriverCase(
-            //    driverClass: ProcessDriver::class
-            //),
-            'fork' => self::makeDriverCase(
+            'process' => self::makeDriverCase(
+                driverClass: ProcessDriver::class
+            ),
+            'fork'    => self::makeDriverCase(
                 driverClass: ForkDriver::class
             ),
-            // TODO
-            //'hybrid'  => self::makeDriverCase(
-            //    driverClass: HybridDriver::class
-            //),
+            'hybrid'  => self::makeDriverCase(
+                driverClass: HybridDriver::class
+            ),
         ];
     }
 
@@ -256,17 +256,15 @@ class SParallelServiceTest extends BaseTestCase
     public static function driversMemoryLeakDataProvider(): array
     {
         return [
-            // TODO
-            //'process' => self::makeDriverCase(
-            //    driverClass: ProcessDriver::class
-            //),
-            'fork' => self::makeDriverCase(
+            'process' => self::makeDriverCase(
+                driverClass: ProcessDriver::class
+            ),
+            'fork'    => self::makeDriverCase(
                 driverClass: ForkDriver::class
             ),
-            // TODO
-            //'hybrid'  => self::makeDriverCase(
-            //    driverClass: HybridDriver::class
-            //),
+            'hybrid'  => self::makeDriverCase(
+                driverClass: HybridDriver::class
+            ),
         ];
     }
 
