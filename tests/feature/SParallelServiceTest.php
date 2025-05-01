@@ -42,6 +42,48 @@ class SParallelServiceTest extends BaseTestCase
     }
 
     /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws ContextCheckerException
+     */
+    #[Test]
+    #[DataProvider('driversDataProvider')]
+    public function waitFirstOnlySuccess(string $driverClass): void
+    {
+        $this->onWaitFirstOnlySuccess(
+            service: $this->makeService($driverClass),
+        );
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws ContextCheckerException
+     */
+    #[Test]
+    #[DataProvider('driversDataProvider')]
+    public function waitFirstNotOnlySuccess(string $driverClass): void
+    {
+        $this->onWaitFirstNotOnlySuccess(
+            service: $this->makeService($driverClass),
+        );
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws ContextCheckerException
+     */
+    #[Test]
+    #[DataProvider('driversDataProvider')]
+    public function workersLimit(string $driverClass): void
+    {
+        $this->onWorkersLimit(
+            service: $this->makeService($driverClass),
+        );
+    }
+
+    /**
      * @param class-string<DriverInterface> $driverClass
      *
      * @throws ContainerExceptionInterface
