@@ -29,16 +29,14 @@ use SParallel\Transport\CallbackTransport;
 use SParallel\Transport\ContextTransport;
 use SParallel\Transport\ProcessMessagesTransport;
 use SParallel\Transport\ResultTransport;
-use SParallelLaravel\Commands\HandleHybridProcessTaskCommand;
-use SParallelLaravel\Commands\HandleProcessTaskCommand;
 use SParallelLaravel\Commands\MonitorWorkersCommand;
 use SParallelLaravel\Implementation\EventsBus;
 use SParallelLaravel\Implementation\HybridProcessCommandResolver;
 use SParallelLaravel\Implementation\ProcessCommandResolver;
 use SParallelLaravel\Implementation\Serializer;
-use SParallelLaravel\Workers\Repositories\WorkersRepositoryInterface;
 use SParallelLaravel\Workers\Repositories\RedisWorkersRepository;
 use SParallelLaravel\Workers\Repositories\StubWorkersRepository;
+use SParallelLaravel\Workers\Repositories\WorkersRepositoryInterface;
 
 class SParallelServiceProvider extends ServiceProvider
 {
@@ -134,8 +132,6 @@ class SParallelServiceProvider extends ServiceProvider
 
         if ($this->app->runningInConsole()) {
             $this->commands([
-                HandleProcessTaskCommand::class,
-                HandleHybridProcessTaskCommand::class,
                 MonitorWorkersCommand::class,
             ]);
 

@@ -26,6 +26,10 @@
             "SParallelLaravel\\": "src/SParallelLaravel"
         }
     },
+    "bin": [
+        "bin/sparallel-process",
+        "bin/sparallel-hybrid-process"
+    ],
     "extra": {
         "laravel": {
             "providers": [

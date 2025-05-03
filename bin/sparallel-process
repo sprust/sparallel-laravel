@@ -1,0 +1,41 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use Illuminate\Foundation\Application;
+use SParallel\Drivers\Process\ProcessHandler;
+
+$autoloadPaths = [
+    __DIR__ . '/../autoload.php',
+    __DIR__ . '/../vendor/autoload.php',
+];
+
+foreach ($autoloadPaths as $file) {
+    if (is_file($file)) {
+        require_once $file;
+
+        break;
+    }
+}
+
+$bootstrapFilePaths = [
+    __DIR__ . '/../bootstrap/app.php',
+    __DIR__ . '/../vendor/orchestra/testbench-core/laravel/bootstrap/app.php',
+];
+
+foreach ($bootstrapFilePaths as $bootstrapFilePath) {
+    if (!is_file($bootstrapFilePath)) {
+        continue;
+    }
+
+    /** @var Application $app */
+    $app = require $bootstrapFilePath;
+
+    $app->make(ProcessHandler::class)->handle();
+
+    exit(0);
+}
+
+throw new RuntimeException('Application bootstrap file not found.');
+

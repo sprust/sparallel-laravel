@@ -250,7 +250,7 @@ class SParallelServiceTest extends BaseTestCase
      * @throws ContainerExceptionInterface
      * @throws ContextCheckerException
      */
-    //#[Test] TODO
+    #[Test]
     #[DataProvider('asyncDriversDataProvider')]
     public function unexpectedExitOfParent(string $driverClass): void
     {
@@ -269,7 +269,7 @@ class SParallelServiceTest extends BaseTestCase
      * @throws ContainerExceptionInterface
      * @throws ContextCheckerException
      */
-    //#[Test] TODO
+    #[Test]
     #[DataProvider('asyncDriversDataProvider')]
     public function memoryLeakOfParent(string $driverClass): void
     {
@@ -315,20 +315,18 @@ class SParallelServiceTest extends BaseTestCase
     public static function allDriversDataProvider(): array
     {
         return [
-            'sync' => self::makeDriverCase(
+            'sync'    => self::makeDriverCase(
                 driverClass: SyncDriver::class
             ),
-            // TODO
-            //'process' => self::makeDriverCase(
-            //    driverClass: ProcessDriver::class
-            //),
-            'fork' => self::makeDriverCase(
+            'process' => self::makeDriverCase(
+                driverClass: ProcessDriver::class
+            ),
+            'fork'    => self::makeDriverCase(
                 driverClass: ForkDriver::class
             ),
-            // TODO
-            //'hybrid'  => self::makeDriverCase(
-            //    driverClass: HybridDriver::class
-            //),
+            'hybrid'  => self::makeDriverCase(
+                driverClass: HybridDriver::class
+            ),
         ];
     }
 
@@ -338,17 +336,15 @@ class SParallelServiceTest extends BaseTestCase
     public static function asyncDriversDataProvider(): array
     {
         return [
-            // TODO
-            //'process' => self::makeDriverCase(
-            //    driverClass: ProcessDriver::class
-            //),
-            'fork' => self::makeDriverCase(
+            'process' => self::makeDriverCase(
+                driverClass: ProcessDriver::class
+            ),
+            'fork'    => self::makeDriverCase(
                 driverClass: ForkDriver::class
             ),
-            // TODO
-            //'hybrid'  => self::makeDriverCase(
-            //    driverClass: HybridDriver::class
-            //),
+            'hybrid'  => self::makeDriverCase(
+                driverClass: HybridDriver::class
+            ),
         ];
     }
 

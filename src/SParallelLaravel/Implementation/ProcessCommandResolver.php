@@ -5,10 +5,7 @@ declare(strict_types=1);
 namespace SParallelLaravel\Implementation;
 
 use SParallel\Contracts\ProcessCommandResolverInterface;
-use SParallelLaravel\Commands\HandleProcessTaskCommand;
 use Symfony\Component\Process\PhpExecutableFinder;
-
-use function Illuminate\Support\artisan_binary;
 
 class ProcessCommandResolver implements ProcessCommandResolverInterface
 {
@@ -21,12 +18,10 @@ class ProcessCommandResolver implements ProcessCommandResolverInterface
         }
 
         return sprintf(
-            'cd %s && %s -d memory_limit=%dM %s %s',
-            base_path(),
+            '%s -d memory_limit=%dM %s',
             (new PhpExecutableFinder())->find(false),
             $memoryLimitMb,
-            artisan_binary(),
-            app(HandleProcessTaskCommand::class)->getName(),
+            'vendor/bin/sparallel-process',
         );
     }
 }
