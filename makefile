@@ -20,7 +20,7 @@ artisan:
 	"$(PHP_CLI)" ./vendor/bin/testbench ${c}
 
 test:
-	"$(PHP_CLI)" ./vendor/bin/phpunit tests/ \
+	"$(PHP_CLI)" ./vendor/bin/phpunit \
 		-d memory_limit=512M \
 		--colors=auto \
 		--testdox \
