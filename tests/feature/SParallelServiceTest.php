@@ -33,7 +33,7 @@ class SParallelServiceTest extends BaseTestCase
      * @throws ContextCheckerException
      */
     #[Test]
-    #[DataProvider('driversDataProvider')]
+    #[DataProvider('allDriversDataProvider')]
     public function success(string $driverClass): void
     {
         $this->onSuccess(
@@ -47,7 +47,7 @@ class SParallelServiceTest extends BaseTestCase
      * @throws ContextCheckerException
      */
     #[Test]
-    #[DataProvider('driversDataProvider')]
+    #[DataProvider('allDriversDataProvider')]
     public function waitFirstOnlySuccess(string $driverClass): void
     {
         $this->onWaitFirstOnlySuccess(
@@ -61,7 +61,7 @@ class SParallelServiceTest extends BaseTestCase
      * @throws ContextCheckerException
      */
     #[Test]
-    #[DataProvider('driversDataProvider')]
+    #[DataProvider('allDriversDataProvider')]
     public function waitFirstNotOnlySuccess(string $driverClass): void
     {
         $this->onWaitFirstNotOnlySuccess(
@@ -75,7 +75,7 @@ class SParallelServiceTest extends BaseTestCase
      * @throws ContextCheckerException
      */
     #[Test]
-    #[DataProvider('driversDataProvider')]
+    #[DataProvider('allDriversDataProvider')]
     public function workersLimit(string $driverClass): void
     {
         $this->onWorkersLimit(
@@ -91,7 +91,7 @@ class SParallelServiceTest extends BaseTestCase
      * @throws ContextCheckerException
      */
     #[Test]
-    #[DataProvider('driversDataProvider')]
+    #[DataProvider('allDriversDataProvider')]
     public function failure(string $driverClass): void
     {
         $this->onFailure(
@@ -104,7 +104,7 @@ class SParallelServiceTest extends BaseTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
-    #[DataProvider('driversDataProvider')]
+    #[DataProvider('allDriversDataProvider')]
     public function timeout(string $driverClass): void
     {
         $this->onTimeout(
@@ -118,7 +118,7 @@ class SParallelServiceTest extends BaseTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
-    #[DataProvider('driversDataProvider')]
+    #[DataProvider('allDriversDataProvider')]
     public function breakAtFirstError(string $driverClass): void
     {
         $this->onBreakAtFirstError(
@@ -132,7 +132,7 @@ class SParallelServiceTest extends BaseTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
-    #[DataProvider('driversDataProvider')]
+    #[DataProvider('allDriversDataProvider')]
     public function bigPayload(string $driverClass): void
     {
         $this->onBigPayload(
@@ -146,7 +146,7 @@ class SParallelServiceTest extends BaseTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
-    #[DataProvider('driversMemoryLeakDataProvider')]
+    #[DataProvider('asyncDriversDataProvider')]
     public function memoryLeak(string $driverClass): void
     {
         $this->onMemoryLeak(
@@ -161,7 +161,7 @@ class SParallelServiceTest extends BaseTestCase
      * @throws ContextCheckerException
      */
     #[Test]
-    #[DataProvider('driversDataProvider')]
+    #[DataProvider('allDriversDataProvider')]
     public function eventsSuccess(string $driverClass): void
     {
         Event::fake();
@@ -206,7 +206,7 @@ class SParallelServiceTest extends BaseTestCase
      * @throws ContextCheckerException
      */
     #[Test]
-    #[DataProvider('driversDataProvider')]
+    #[DataProvider('allDriversDataProvider')]
     public function eventsFailed(string $driverClass): void
     {
         Event::fake();
@@ -246,6 +246,44 @@ class SParallelServiceTest extends BaseTestCase
     }
 
     /**
+     * @throws NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws ContextCheckerException
+     */
+    //#[Test] TODO
+    #[DataProvider('asyncDriversDataProvider')]
+    public function unexpectedExitOfParent(string $driverClass): void
+    {
+        $processService = $this->makeService(ProcessDriver::class);
+
+        $testableService = $this->makeService($driverClass);
+
+        $this->onUnexpectedExitOfParent(
+            processService: $processService,
+            testableService: $testableService
+        );
+    }
+
+    /**
+     * @throws NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws ContextCheckerException
+     */
+    //#[Test] TODO
+    #[DataProvider('asyncDriversDataProvider')]
+    public function memoryLeakOfParent(string $driverClass): void
+    {
+        $processService = $this->makeService(ProcessDriver::class);
+
+        $testableService = $this->makeService($driverClass);
+
+        $this->onMemoryLeakOfParent(
+            processService: $processService,
+            testableService: $testableService
+        );
+    }
+
+    /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
@@ -274,7 +312,7 @@ class SParallelServiceTest extends BaseTestCase
     /**
      * @return array{driverClass: class-string<DriverInterface>}[]
      */
-    public static function driversDataProvider(): array
+    public static function allDriversDataProvider(): array
     {
         return [
             'sync'    => self::makeDriverCase(
@@ -295,7 +333,7 @@ class SParallelServiceTest extends BaseTestCase
     /**
      * @return array{driverClass: class-string<DriverInterface>}[]
      */
-    public static function driversMemoryLeakDataProvider(): array
+    public static function asyncDriversDataProvider(): array
     {
         return [
             'process' => self::makeDriverCase(
