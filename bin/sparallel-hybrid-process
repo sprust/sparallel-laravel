@@ -6,36 +6,8 @@ declare(strict_types=1);
 use Illuminate\Foundation\Application;
 use SParallel\Drivers\Hybrid\HybridProcessHandler;
 
-$autoloadPaths = [
-    __DIR__ . '/../autoload.php',
-    __DIR__ . '/../vendor/autoload.php',
-];
+/** @var Application $app */
+$app = require_once 'bootstrap.php';
 
-foreach ($autoloadPaths as $file) {
-    if (is_file($file)) {
-        require_once $file;
-
-        break;
-    }
-}
-
-$bootstrapFilePaths = [
-    __DIR__ . '/../bootstrap/app.php',
-    __DIR__ . '/../vendor/orchestra/testbench-core/laravel/bootstrap/app.php',
-];
-
-foreach ($bootstrapFilePaths as $bootstrapFilePath) {
-    if (!is_file($bootstrapFilePath)) {
-        continue;
-    }
-
-    /** @var Application $app */
-    $app = require $bootstrapFilePath;
-
-    $app->make(HybridProcessHandler::class)->handle();
-
-    exit(0);
-}
-
-throw new RuntimeException('Application bootstrap file not found.');
+$app->make(HybridProcessHandler::class)->handle();
 
