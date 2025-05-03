@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+use Illuminate\Contracts\Console\Kernel;
+use Illuminate\Foundation\Application;
+
 $autoloadPaths = [
     __DIR__ . '/../../../autoload.php',
     __DIR__ . '/../vendor/autoload.php',
@@ -42,4 +45,9 @@ if (!$bootstrapFilePath) {
     throw new RuntimeException('Application bootstrap file not found.');
 }
 
-return require_once $bootstrapFilePath;
+/** @var Application $app */
+$app = require_once $bootstrapFilePath;
+
+$app->make(Kernel::class)->bootstrap();
+
+return $app;

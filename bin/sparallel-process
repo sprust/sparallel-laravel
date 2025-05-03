@@ -7,7 +7,7 @@ use Illuminate\Foundation\Application;
 use SParallel\Drivers\Process\ProcessHandler;
 
 /** @var Application $app */
-$app = require 'bootstrap.php';
+$app = require_once 'bootstrap.php';
 
 $app->make(ProcessHandler::class)->handle();
 
