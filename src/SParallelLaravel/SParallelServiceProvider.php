@@ -12,6 +12,7 @@ use Psr\Container\NotFoundExceptionInterface;
 use SParallel\Contracts\CallbackCallerInterface;
 use SParallel\Contracts\DriverInterface;
 use SParallel\Contracts\EventsBusInterface;
+use SParallel\Contracts\ForkStarterInterface;
 use SParallel\Contracts\HybridProcessCommandResolverInterface;
 use SParallel\Contracts\ProcessCommandResolverInterface;
 use SParallel\Contracts\SerializerInterface;
@@ -20,6 +21,7 @@ use SParallel\Drivers\Hybrid\HybridDriver;
 use SParallel\Drivers\Process\ProcessDriver;
 use SParallel\Drivers\Sync\SyncDriver;
 use SParallel\Services\Callback\CallbackCaller;
+use SParallel\Services\Fork\Forker;
 use SParallel\Services\Fork\ForkHandler;
 use SParallel\Services\Fork\ForkService;
 use SParallel\Services\Process\ProcessService;
@@ -31,6 +33,7 @@ use SParallel\Transport\ProcessMessagesTransport;
 use SParallel\Transport\ResultTransport;
 use SParallelLaravel\Commands\MonitorWorkersCommand;
 use SParallelLaravel\Implementation\EventsBus;
+use SParallelLaravel\Implementation\ForkStarter;
 use SParallelLaravel\Implementation\HybridProcessCommandResolver;
 use SParallelLaravel\Implementation\ProcessCommandResolver;
 use SParallelLaravel\Implementation\Serializer;
@@ -76,10 +79,12 @@ class SParallelServiceProvider extends ServiceProvider
         $this->app->singleton(CallbackCallerInterface::class, CallbackCaller::class);
         $this->app->singleton(ProcessCommandResolverInterface::class, ProcessCommandResolver::class);
         $this->app->singleton(HybridProcessCommandResolverInterface::class, HybridProcessCommandResolver::class);
+        $this->app->singleton(ForkStarterInterface::class, ForkStarter::class);
 
         // services
         $this->app->singleton(ForkHandler::class);
         $this->app->singleton(ForkService::class);
+        $this->app->singleton(Forker::class);
         $this->app->singleton(ProcessService::class);
         $this->app->singleton(SocketService::class);
         $this->app->singleton(SParallelService::class);
