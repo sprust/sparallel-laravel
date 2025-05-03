@@ -6,11 +6,10 @@ namespace SParallelLaravel\Events;
 
 use SParallel\Services\Context;
 
-readonly class SParallelTaskStartingEvent
+readonly class FlowStartingEvent
 {
     public function __construct(
-        public string $driverName,
-        public Context $context,
+        public Context $context
     ) {
     }
 }

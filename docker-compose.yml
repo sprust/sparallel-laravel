@@ -4,7 +4,24 @@ services:
     build:
       context: ./docker/php
     working_dir: /sparallel
+    depends_on:
+      redis:
+        condition: service_started
     volumes:
       - ./:/sparallel
     extra_hosts:
       - "host.docker.internal:host-gateway"
+  redis:
+    container_name: spl-redis
+    restart: unless-stopped
+    image: redis:alpine
+    volumes:
+      - redis:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      retries: 3
+      timeout: 5s
+
+volumes:
+  redis:
+    driver: local

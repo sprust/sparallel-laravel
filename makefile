@@ -1,4 +1,5 @@
 PHP_CLI="docker-compose run -it --rm --user $$(id -u):$$(id -g) php"
+REDIS_CLI="docker-compose exec redis redis-cli"
 
 build:
 	docker-compose build
@@ -9,8 +10,14 @@ down:
 bash:
 	"$(PHP_CLI)" bash
 
+redis:
+	"$(REDIS_CLI)"
+
 composer:
 	"$(PHP_CLI)" composer ${c}
+
+artisan:
+	"$(PHP_CLI)" ./vendor/bin/testbench ${c}
 
 test:
 	"$(PHP_CLI)" ./vendor/bin/phpunit tests/ \

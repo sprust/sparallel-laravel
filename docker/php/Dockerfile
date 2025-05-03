@@ -2,7 +2,7 @@ FROM php:8.2-cli
 
 RUN apt update && apt install -y git libzip-dev zip unzip
 
-RUN pecl install zip && docker-php-ext-enable zip
+RUN pecl install zip redis && docker-php-ext-enable zip redis
 
 RUN docker-php-ext-install sockets && docker-php-ext-enable sockets
 

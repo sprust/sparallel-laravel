@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace SParallelLaravel\Listeners;
 
-use SParallelLaravel\Events\SParallelTaskStartingEvent;
+use SParallelLaravel\Events\TaskStartingEvent;
 
 readonly class DBReconnectAtTaskStartingListener
 {
-    public function handle(SParallelTaskStartingEvent $event): void
+    public function handle(TaskStartingEvent $event): void
     {
         foreach (app('db')->getConnections() as $connection) {
             $connection->flushQueryLog();

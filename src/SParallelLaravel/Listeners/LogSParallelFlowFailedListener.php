@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace SParallelLaravel\Listeners;
 
-use SParallelLaravel\Events\SParallelFlowFailedEvent;
+use SParallelLaravel\Events\FlowFailedEvent;
 
 class LogSParallelFlowFailedListener
 {
-    public function handle(SParallelFlowFailedEvent $event): void
+    public function handle(FlowFailedEvent $event): void
     {
         report($event->exception);
     }

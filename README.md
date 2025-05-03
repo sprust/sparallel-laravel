@@ -8,6 +8,8 @@ php artisan vendor:publish --tag=sparallel-laravel
 # sparallel
 SPARALLEL_MODE=sync
 SPARALLEL_TASK_MEMORY_LIMIT_MB=128
+# one of: none, redis
+SPARALLEL_WORKERS_REPOSITORY=redis
 ```
 
 ## example ##

@@ -6,37 +6,37 @@ namespace SParallelLaravel\Implementation;
 
 use SParallel\Contracts\EventsBusInterface;
 use SParallel\Services\Context;
-use SParallelLaravel\Events\SParallelFlowFailedEvent;
-use SParallelLaravel\Events\SParallelFlowFinishedEvent;
-use SParallelLaravel\Events\SParallelFlowStartingEvent;
-use SParallelLaravel\Events\SParallelProcessCreatedEvent;
-use SParallelLaravel\Events\SParallelProcessFinishedEvent;
-use SParallelLaravel\Events\SParallelTaskFailedEvent;
-use SParallelLaravel\Events\SParallelTaskFinishedEvent;
-use SParallelLaravel\Events\SParallelTaskStartingEvent;
+use SParallelLaravel\Events\FlowFailedEvent;
+use SParallelLaravel\Events\FlowFinishedEvent;
+use SParallelLaravel\Events\FlowStartingEvent;
+use SParallelLaravel\Events\ProcessCreatedEvent;
+use SParallelLaravel\Events\ProcessFinishedEvent;
+use SParallelLaravel\Events\TaskFailedEvent;
+use SParallelLaravel\Events\TaskFinishedEvent;
+use SParallelLaravel\Events\TaskStartingEvent;
 use Throwable;
 
 class EventsBus implements EventsBusInterface
 {
     public function flowStarting(Context $context): void
     {
-        event(new SParallelFlowStartingEvent(context: $context));
+        event(new FlowStartingEvent(context: $context));
     }
 
     public function flowFailed(Context $context, Throwable $exception): void
     {
-        event(new SParallelFlowFailedEvent(context: $context, exception: $exception));
+        event(new FlowFailedEvent(context: $context, exception: $exception));
     }
 
     public function flowFinished(Context $context): void
     {
-        event(new SParallelFlowFinishedEvent(context: $context));
+        event(new FlowFinishedEvent(context: $context));
     }
 
     public function taskStarting(string $driverName, Context $context): void
     {
         event(
-            new SParallelTaskStartingEvent(
+            new TaskStartingEvent(
                 driverName: $driverName,
                 context: $context
             )
@@ -46,7 +46,7 @@ class EventsBus implements EventsBusInterface
     public function taskFailed(string $driverName, Context $context, Throwable $exception): void
     {
         event(
-            new SParallelTaskFailedEvent(
+            new TaskFailedEvent(
                 driverName: $driverName,
                 context: $context,
                 exception: $exception
@@ -57,7 +57,7 @@ class EventsBus implements EventsBusInterface
     public function taskFinished(string $driverName, Context $context): void
     {
         event(
-            new SParallelTaskFinishedEvent(
+            new TaskFinishedEvent(
                 driverName: $driverName,
                 context: $context
             )
@@ -67,7 +67,7 @@ class EventsBus implements EventsBusInterface
     public function processCreated(int $pid): void
     {
         event(
-            new SParallelProcessCreatedEvent(
+            new ProcessCreatedEvent(
                 pid: $pid
             )
         );
@@ -76,7 +76,7 @@ class EventsBus implements EventsBusInterface
     public function processFinished(int $pid): void
     {
         event(
-            new SParallelProcessFinishedEvent(
+            new ProcessFinishedEvent(
                 pid: $pid
             )
         );

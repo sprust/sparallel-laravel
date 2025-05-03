@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SParallelLaravel;
 
 use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\ServiceProvider;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -30,10 +31,14 @@ use SParallel\Transport\ProcessMessagesTransport;
 use SParallel\Transport\ResultTransport;
 use SParallelLaravel\Commands\HandleHybridProcessTaskCommand;
 use SParallelLaravel\Commands\HandleProcessTaskCommand;
+use SParallelLaravel\Commands\MonitorWorkersCommand;
 use SParallelLaravel\Implementation\EventsBus;
 use SParallelLaravel\Implementation\HybridProcessCommandResolver;
 use SParallelLaravel\Implementation\ProcessCommandResolver;
 use SParallelLaravel\Implementation\Serializer;
+use SParallelLaravel\Workers\Repositories\WorkersRepositoryInterface;
+use SParallelLaravel\Workers\Repositories\RedisWorkersRepository;
+use SParallelLaravel\Workers\Repositories\StubWorkersRepository;
 
 class SParallelServiceProvider extends ServiceProvider
 {
@@ -43,6 +48,24 @@ class SParallelServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // workers repository
+        $this->app->singleton(
+            WorkersRepositoryInterface::class,
+            static function () {
+                // TODO: factory
+
+                $repositoryType = strtolower(config('sparallel.workers_repository', 'none'));
+
+                if ($repositoryType === 'redis') {
+                    return new RedisWorkersRepository(
+                        redis: Redis::connection()->client(),
+                    );
+                }
+
+                return new StubWorkersRepository();
+            }
+        );
+
         // transports
         $this->app->singleton(CallbackTransport::class);
         $this->app->singleton(ResultTransport::class);
@@ -67,6 +90,8 @@ class SParallelServiceProvider extends ServiceProvider
         $this->app->singleton(
             DriverInterface::class,
             static function (): DriverInterface {
+                // TODO: factory
+
                 $mode = strtolower(config('sparallel.mode', 'sync'));
 
                 if ($mode === 'sync') {
@@ -111,6 +136,7 @@ class SParallelServiceProvider extends ServiceProvider
             $this->commands([
                 HandleProcessTaskCommand::class,
                 HandleHybridProcessTaskCommand::class,
+                MonitorWorkersCommand::class,
             ]);
 
             $this->publishes(
