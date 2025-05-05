@@ -11,7 +11,7 @@
     "require": {
         "php": "^8.2",
         "ext-redis": "*",
-        "laravel/framework": "^9.0 | ^10.0 | ^11.0",
+        "laravel/framework": "^9.0 | ^10.0 | ^11.0 | ^12.0",
         "sparallel/sparallel": "dev-master",
         "ext-posix": "*",
         "predis/predis": "^2.2"
