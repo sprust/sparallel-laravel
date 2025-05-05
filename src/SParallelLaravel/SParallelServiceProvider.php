@@ -40,6 +40,7 @@ use SParallelLaravel\Implementation\Serializer;
 use SParallelLaravel\Workers\Repositories\RedisWorkersRepository;
 use SParallelLaravel\Workers\Repositories\StubWorkersRepository;
 use SParallelLaravel\Workers\Repositories\WorkersRepositoryInterface;
+use SParallelLaravel\Workers\WorkerCommandFactory;
 
 class SParallelServiceProvider extends ServiceProvider
 {
@@ -49,7 +50,13 @@ class SParallelServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // workers repository
+        // workers
+        $this->app->singleton(
+            WorkerCommandFactory::class,
+            static fn(): WorkerCommandFactory => new WorkerCommandFactory(
+                memoryLimitMb: (int) config('sparallel.task_memory_limit_mb')
+            )
+        );
         $this->app->singleton(
             WorkersRepositoryInterface::class,
             static function () {
