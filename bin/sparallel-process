@@ -3,13 +3,11 @@
 
 declare(strict_types=1);
 
-use Illuminate\Foundation\Application;
 use SParallel\Drivers\Process\ProcessHandler;
+use SParallelLaravel\Application\ApplicationFactory;
 
 require_once 'autoload.php';
 
-/** @var Application $app */
-$app = require 'bootstrap.php';
-
-$app->make(ProcessHandler::class)->handle();
-
+ApplicationFactory::create()
+    ->make(ProcessHandler::class)
+    ->handle();
