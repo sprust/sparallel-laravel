@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a358705be1f4bbee8201a43ee553b66f",
+    "content-hash": "57ddcc266b029fcab9262486e8ef813f",
     "packages": [
         {
             "name": "brick/math",
@@ -3215,12 +3215,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sprust/sparallel.git",
-                "reference": "0d09791fc249a4afe5c400f0ec65fe44515d4755"
+                "reference": "1bcebc55d8ebbebd6d0ecc9ad7a450547fe8542e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sprust/sparallel/zipball/0d09791fc249a4afe5c400f0ec65fe44515d4755",
-                "reference": "0d09791fc249a4afe5c400f0ec65fe44515d4755",
+                "url": "https://api.github.com/repos/sprust/sparallel/zipball/1bcebc55d8ebbebd6d0ecc9ad7a450547fe8542e",
+                "reference": "1bcebc55d8ebbebd6d0ecc9ad7a450547fe8542e",
                 "shasum": ""
             },
             "require": {
@@ -3258,7 +3258,7 @@
                 "issues": "https://github.com/sprust/sparallel/issues",
                 "source": "https://github.com/sprust/sparallel/tree/master"
             },
-            "time": "2025-05-03T23:44:10+00:00"
+            "time": "2025-05-06T09:46:25+00:00"
         },
         {
             "name": "symfony/clock",
