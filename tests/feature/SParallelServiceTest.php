@@ -15,7 +15,7 @@ use SParallel\Drivers\Hybrid\HybridDriver;
 use SParallel\Drivers\Process\ProcessDriver;
 use SParallel\Drivers\Sync\SyncDriver;
 use SParallel\Exceptions\ContextCheckerException;
-use SParallel\Services\Context;
+use SParallel\Entities\Context;
 use SParallel\Services\SParallelService;
 use SParallel\TestCases\SParallelServiceTestCasesTrait;
 use SParallelLaravel\Events\FlowFailedEvent;

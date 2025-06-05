@@ -1,5 +1,4 @@
-PHP_CLI="docker-compose run -it --rm --user $$(id -u):$$(id -g) php"
-REDIS_CLI="docker-compose exec redis redis-cli"
+PHP_CLI="docker-compose exec php"
 
 build:
 	docker-compose build
@@ -7,11 +6,17 @@ build:
 down:
 	docker-compose down
 
-bash:
-	"$(PHP_CLI)" bash
+up:
+	docker-compose up
 
-redis:
-	"$(REDIS_CLI)"
+up-d:
+	docker-compose up -d
+
+stop:
+	docker-compose stop
+
+bash-php:
+	"$(PHP_CLI)" bash
 
 composer:
 	"$(PHP_CLI)" composer ${c}

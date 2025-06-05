@@ -1,27 +1,28 @@
 services:
   php:
     container_name: spl-php
+    restart: on-failure
     build:
       context: ./docker/php
+      target: php
+      args:
+        - GROUP_ID=${DOCKER_GROUP_ID}
+        - USER_ID=${DOCKER_USER_ID}
     working_dir: /sparallel
-    depends_on:
-      redis:
-        condition: service_started
     volumes:
       - ./:/sparallel
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-  redis:
-    container_name: spl-redis
-    restart: unless-stopped
-    image: redis:alpine
-    volumes:
-      - redis:/data
-    healthcheck:
-      test: [ "CMD", "redis-cli", "ping" ]
-      retries: 3
-      timeout: 5s
+    command: [ "php", "/sparallel/docker/php/docker-php-stub.php" ]
 
-volumes:
-  redis:
-    driver: local
+  server:
+    container_name: spl-server
+    restart: on-failure
+    build:
+      context: ./docker/php
+      target: php
+      args:
+        - GROUP_ID=${DOCKER_GROUP_ID}
+        - USER_ID=${DOCKER_USER_ID}
+    working_dir: /sparallel/libs/server
+    volumes:
+      - ./:/sparallel
+    command: [ "./sparallel", "start" ]

@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace SParallelLaravel\Implementation;
 
 use SParallel\Contracts\EventsBusInterface;
-use SParallel\Services\Context;
+use SParallel\Entities\Context;
+use SParallel\Exceptions\RpcCallException;
 use SParallelLaravel\Events\FlowFailedEvent;
 use SParallelLaravel\Events\FlowFinishedEvent;
 use SParallelLaravel\Events\FlowStartingEvent;
-use SParallelLaravel\Events\ProcessCreatedEvent;
-use SParallelLaravel\Events\ProcessFinishedEvent;
+use SParallelLaravel\Events\ServerGoneEvent;
 use SParallelLaravel\Events\TaskFailedEvent;
 use SParallelLaravel\Events\TaskFinishedEvent;
 use SParallelLaravel\Events\TaskStartingEvent;
@@ -64,20 +64,12 @@ class EventsBus implements EventsBusInterface
         );
     }
 
-    public function processCreated(int $pid): void
+    public function onServerGone(Context $context, RpcCallException $exception): void
     {
         event(
-            new ProcessCreatedEvent(
-                pid: $pid
-            )
-        );
-    }
-
-    public function processFinished(int $pid): void
-    {
-        event(
-            new ProcessFinishedEvent(
-                pid: $pid
+            new ServerGoneEvent(
+                context: $context,
+                exception: $exception
             )
         );
     }

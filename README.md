@@ -7,22 +7,21 @@ php artisan vendor:publish --tag=sparallel-laravel
 ```dotenv
 # sparallel
 SPARALLEL_MODE=sync
-SPARALLEL_TASK_MEMORY_LIMIT_MB=128
-# one of: none, redis
-SPARALLEL_WORKERS_REPOSITORY=redis
+SPARALLEL_SERVER_HOST=localhost
+SPARALLEL_SERVER_PORT=18077
 ```
 
 ## example ##
 
 Init
 ```php
-$service = app(\SParallel\Services\SParallelService::class);
+$service = app(\SParallel\SParallelWorkers::class);
 
 $callbacks = [
     'first'  => static fn() => 'first',
     'second' => static fn() => throw new RuntimeException('second'),
     'third'  => static function(
-        \SParallel\Services\Context $context,
+        \SParallel\Entities\Context $context,
         \Illuminate\Contracts\Events\Dispatcher $dispatcher // DI support
     ) {
         $context->check();
@@ -35,7 +34,7 @@ $callbacks = [
 Wait all tasks to finish and get results
 ```php
 /** 
- * @var \SParallel\Services\SParallelService $service 
+ * @var \SParallel\SParallelWorkers $service 
  * @var array<string, Closure> $callbacks 
  */
 
@@ -62,7 +61,7 @@ foreach ($results->getResults() as $result) {
 Run tasks and get results at any task completion
 ```php
 /** 
- * @var \SParallel\Services\SParallelService $service 
+ * @var \SParallel\SParallelWorkers $service 
  * @var array<string, Closure> $callbacks 
  */
 

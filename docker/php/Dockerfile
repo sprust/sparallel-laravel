@@ -1,15 +1,32 @@
-FROM php:8.2-cli
+FROM php:8.2-cli AS base
 
-RUN apt update && apt install -y git libzip-dev zip unzip
+RUN apt update && apt install -y \
+    git \
+    libzip-dev \
+    zip \
+    unzip \
+    wget \
+    git \
+    gcc \
+    make
 
-RUN pecl install zip redis && docker-php-ext-enable zip redis
+# PHP
+RUN pecl install zip pcntl && docker-php-ext-enable zip
 
-RUN docker-php-ext-install sockets && docker-php-ext-enable sockets
+RUN docker-php-ext-install sockets pcntl && docker-php-ext-enable sockets
 
-RUN pecl pcntl && docker-php-ext-install pcntl
+RUN git config --global --add safe.directory /sparallel
 
-# composer
+FROM base AS php
+
 RUN curl -sS https://getcomposer.org/installer  \
     | php -- --install-dir=/usr/local/bin --filename=composer
 
-RUN git config --global --add safe.directory /sparallel
+ARG USER_ID
+ARG GROUP_ID
+
+# Check if user and group doesn't exist before creating
+RUN getent group "$GROUP_ID" || addgroup --gid "$GROUP_ID" user
+RUN getent passwd "$USER_ID" || adduser --disabled-password --gecos '' --uid "$USER_ID" --gid "$GROUP_ID" user
+
+USER "$USER_ID"

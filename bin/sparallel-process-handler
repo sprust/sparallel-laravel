@@ -3,11 +3,11 @@
 
 declare(strict_types=1);
 
-use SParallel\Drivers\Process\ProcessHandler;
+use SParallel\Drivers\Server\ServerWorker;
 use SParallelLaravel\Application\ApplicationFactory;
 
 require_once 'autoload.php';
 
 ApplicationFactory::create()
-    ->make(ProcessHandler::class)
-    ->handle();
+    ->make(ServerWorker::class)
+    ->serve();

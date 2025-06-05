@@ -6,7 +6,7 @@ namespace SParallelLaravel\Listeners;
 
 use SParallelLaravel\Events\TaskFailedEvent;
 
-class LogSParallelTaskFailedListener
+class ReportTaskFailedListener
 {
     public function handle(TaskFailedEvent $event): void
     {
