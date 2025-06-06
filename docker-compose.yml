@@ -15,7 +15,7 @@ services:
 
   server:
     container_name: spl-server
-    restart: on-failure
+    restart: always
     build:
       context: ./docker/php
       target: php

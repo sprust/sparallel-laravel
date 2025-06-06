@@ -23,7 +23,9 @@ use SParallel\Transport\ContextTransport;
 use SParallel\Transport\ServerTaskTransport;
 use SParallel\Transport\TaskResultTransport;
 use SParallelLaravel\Commands\LoadServerBinCommand;
-use SParallelLaravel\Commands\ServerStatsCommand;
+use SParallelLaravel\Commands\ReloadServerWorkersCommand;
+use SParallelLaravel\Commands\ShowServerStatsCommand;
+use SParallelLaravel\Commands\StopServerCommand;
 use SParallelLaravel\Implementation\EventsBus;
 use SParallelLaravel\Implementation\Serializer;
 use SParallelLaravel\Implementation\Logger;
@@ -93,8 +95,10 @@ class SParallelServiceProvider extends ServiceProvider
 
         if ($this->app->runningInConsole()) {
             $this->commands([
-                ServerStatsCommand::class,
                 LoadServerBinCommand::class,
+                ShowServerStatsCommand::class,
+                ReloadServerWorkersCommand::class,
+                StopServerCommand::class,
             ]);
 
             $this->publishes(

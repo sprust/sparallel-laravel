@@ -8,11 +8,11 @@ use Illuminate\Console\Command;
 use SParallel\Server\StatsRpcClient;
 use Throwable;
 
-class ServerStatsCommand extends Command
+class ShowServerStatsCommand extends Command
 {
     protected $signature = 'sparallel:server:stats';
 
-    protected $description = 'Monitor processes';
+    protected $description = 'Show server stats';
 
     public function handle(StatsRpcClient $client): void
     {

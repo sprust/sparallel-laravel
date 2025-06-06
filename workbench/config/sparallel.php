@@ -19,9 +19,9 @@ return [
     'mode' => env('SPARALLEL_MODE', 'sync'),
 
     'server'    => [
-        'host'     => env('SPARALLEL_SERVER_HOST', '127.0.0.1'),
-        'port'     => (int) env('SPARALLEL_SERVER_PORT', 9000),
-        'bin-path' => env('SPARALLEL_SERVER_BIN_PATH'),
+        'host'     => env('SPARALLEL_SERVER_HOST', 'localhost'),
+        'port'     => (int) env('SPARALLEL_SERVER_PORT', 18077),
+        'bin-path' => env('SPARALLEL_SERVER_BIN_PATH', storage_path('bin/sparallel/server')),
     ],
 
     /**

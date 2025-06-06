@@ -24,7 +24,7 @@
         }
     },
     "bin": [
-        "bin/sparallel-process-handler"
+        "bin/sparallel-worker-e104f"
     ],
     "extra": {
         "laravel": {
