@@ -9,26 +9,26 @@ use Illuminate\Support\ServiceProvider;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SParallel\Contracts\CallbackCallerInterface;
-use SParallel\Contracts\DriverInterface;
+use SParallel\Contracts\DriverFactoryInterface;
 use SParallel\Contracts\EventsBusInterface;
 use SParallel\Contracts\RpcClientInterface;
 use SParallel\Contracts\SerializerInterface;
 use SParallel\Contracts\SParallelLoggerInterface;
-use SParallel\Drivers\Server\ServerDriver;
-use SParallel\Drivers\Sync\SyncDriver;
 use SParallel\Implementation\CallbackCaller;
 use SParallel\Implementation\RpcClient;
 use SParallel\Transport\CallbackTransport;
 use SParallel\Transport\ContextTransport;
 use SParallel\Transport\ServerTaskTransport;
 use SParallel\Transport\TaskResultTransport;
+use SParallelLaravel\Commands\BenchmarkServerWorkersCommand;
 use SParallelLaravel\Commands\LoadServerBinCommand;
 use SParallelLaravel\Commands\ReloadServerWorkersCommand;
 use SParallelLaravel\Commands\ShowServerStatsCommand;
 use SParallelLaravel\Commands\StopServerCommand;
+use SParallelLaravel\Implementation\DriverFactory;
 use SParallelLaravel\Implementation\EventsBus;
-use SParallelLaravel\Implementation\Serializer;
 use SParallelLaravel\Implementation\Logger;
+use SParallelLaravel\Implementation\Serializer;
 use Spiral\Goridge\Relay;
 use Spiral\Goridge\RPC\RPC;
 
@@ -64,26 +64,7 @@ class SParallelServiceProvider extends ServiceProvider
         $this->app->singleton(SParallelLoggerInterface::class, Logger::class);
 
         // drivers
-        $this->app->singleton(
-            DriverInterface::class,
-            static function (): DriverInterface {
-                // TODO: factory
-
-                $mode = strtolower(config('sparallel.mode', 'sync'));
-
-                if ($mode === 'sync') {
-                    return app(SyncDriver::class);
-                }
-
-                if ($mode === 'server') {
-                    return app(ServerDriver::class);
-                }
-
-                logger()->warning("Unknown sparallel mode: $mode. Using 'sync' mode.");
-
-                return app(SyncDriver::class);
-            }
-        );
+        $this->app->singleton(DriverFactoryInterface::class, DriverFactory::class);
 
         $events = $this->app->get(Dispatcher::class);
 
@@ -99,6 +80,7 @@ class SParallelServiceProvider extends ServiceProvider
                 ShowServerStatsCommand::class,
                 ReloadServerWorkersCommand::class,
                 StopServerCommand::class,
+                BenchmarkServerWorkersCommand::class,
             ]);
 
             $this->publishes(

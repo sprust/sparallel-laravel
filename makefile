@@ -23,6 +23,10 @@ up:
 up-d:
 	docker-compose up -d
 
+watch:
+	make up-d
+	make server-logs
+
 restart:
 	docker-compose restart
 
@@ -43,6 +47,12 @@ load-server-bin:
 
 server-logs:
 	docker logs -f spl-server
+
+server-stop:
+	make artisan c=sparallel:server:stop
+
+server-workers-reload:
+	make artisan c=sparallel:server:workers:reload
 
 test:
 	"$(PHP_CLI)" ./vendor/bin/phpunit \

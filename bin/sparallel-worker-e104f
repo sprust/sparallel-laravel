@@ -4,10 +4,25 @@
 declare(strict_types=1);
 
 use SParallel\Drivers\Server\ServerWorker;
-use SParallelLaravel\Application\ApplicationFactory;
 
 require_once 'autoload.php';
 
-ApplicationFactory::create()
-    ->make(ServerWorker::class)
-    ->serve();
+$exitCode = 0;
+
+try {
+    $worker = new ServerWorker();
+
+    $dir = __DIR__;
+
+    $containerFactory = new SParallelLaravel\Implementation\ContainerFactory(
+        static fn () => require $dir . '/bootstrap.php'
+    );
+
+    $worker->serve(containerFactory: $containerFactory);
+} catch (Throwable $exception) {
+    fwrite(STDERR, (string) $exception);
+
+    $exitCode = 1;
+}
+
+exit($exitCode);
