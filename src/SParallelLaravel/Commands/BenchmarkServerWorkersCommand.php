@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace SParallelLaravel\Commands;
 
 use Illuminate\Console\Command;
-use SParallel\SParallelWorkers;
+use Psr\Container\ContainerInterface;
+use SParallel\Drivers\Server\ServerDriver;
+use SParallel\TestCases\Benchmark;
 use Throwable;
 
 class BenchmarkServerWorkersCommand extends Command
@@ -17,68 +19,33 @@ class BenchmarkServerWorkersCommand extends Command
     /**
      * @throws Throwable
      */
-    public function handle(SParallelWorkers $workers): void
+    public function handle(ContainerInterface $container): void
     {
-        $total = ((int) $this->argument('count')) ?: 10;
+        ini_set('memory_limit', '1G');
 
-        $counter = 0;
+        $count = ((int) $this->argument('count')) ?: 5;
 
-        $callbacks = [];
+        $benchmark = new Benchmark(
+            uniqueCount: $count,
+            bigResponseCount: $count,
+            sleepCount: $count,
+            sleepSec: 1,
+            memoryLimitCount: $count,
+            throwCount: $count,
+        );
 
-        while ($counter < $total) {
-            ++$counter;
+        $driverClasses = [
+            ServerDriver::class,
+        ];
 
-            $callbacks[] = static fn() => uniqid();
-        }
+        $timeoutSeconds = 50;
+        $workersLimit   = 10;
 
-        $totalCounter   = 0;
-        $successCounter = 0;
-        $failedCounter  = 0;
-
-        memory_reset_peak_usage();
-
-        $start = microtime(true);
-
-        $generator = $workers->run($callbacks, 30);
-
-        foreach ($generator as $result) {
-            ++$totalCounter;
-
-            if ($result->error) {
-                ++$failedCounter;
-
-                echo sprintf(
-                    "%f\t%s\tERROR\t%s\t%s\n",
-                    microtime(true),
-                    $result->taskKey,
-                    $totalCounter,
-                    substr($result->error->message, 0, 50),
-                );
-
-                continue;
-            }
-
-            ++$successCounter;
-
-            echo sprintf(
-                "%f\t%s\tINFO\t%s\t%s\n",
-                microtime(true),
-                $result->taskKey,
-                $totalCounter,
-                substr($result->result, 0, 50),
-            );
-        }
-
-        echo sprintf(
-                "\n\nmemPeak:%f\ttime:%f\tcount:%d/%d\tsuccess:%d/%d\tfailed:%d/%d",
-                round(memory_get_peak_usage() / 1024 / 1024, 4),
-                microtime(true) - $start,
-                $totalCounter,
-                $total,
-                $successCounter,
-                $total,
-                $failedCounter,
-                $total,
-            ) . PHP_EOL;
+        $benchmark->start(
+            container: $container,
+            driverClasses: $driverClasses,
+            timeoutSeconds: $timeoutSeconds,
+            workersLimit: $workersLimit,
+        );
     }
 }
