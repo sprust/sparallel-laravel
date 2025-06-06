@@ -25,13 +25,15 @@ class BenchmarkServerWorkersCommand extends Command
 
         $callbacks = [];
 
-        while ($counter <= $total) {
+        while ($counter < $total) {
             ++$counter;
 
             $callbacks[] = static fn() => uniqid();
         }
 
-        $counter = 0;
+        $totalCounter   = 0;
+        $successCounter = 0;
+        $failedCounter  = 0;
 
         memory_reset_peak_usage();
 
@@ -40,34 +42,42 @@ class BenchmarkServerWorkersCommand extends Command
         $generator = $workers->run($callbacks, 30);
 
         foreach ($generator as $result) {
-            ++$counter;
+            ++$totalCounter;
 
             if ($result->error) {
+                ++$failedCounter;
+
                 echo sprintf(
                     "%f\t%s\tERROR\t%s\t%s\n",
                     microtime(true),
                     $result->taskKey,
-                    $counter,
+                    $totalCounter,
                     substr($result->error->message, 0, 50),
                 );
 
                 continue;
             }
 
+            ++$successCounter;
+
             echo sprintf(
                 "%f\t%s\tINFO\t%s\t%s\n",
                 microtime(true),
                 $result->taskKey,
-                $counter,
+                $totalCounter,
                 substr($result->result, 0, 50),
             );
         }
 
         echo sprintf(
-                "\n\nmemPeak:%f\ttime:%f\tcount:%d/%d",
+                "\n\nmemPeak:%f\ttime:%f\tcount:%d/%d\tsuccess:%d/%d\tfailed:%d/%d",
                 round(memory_get_peak_usage() / 1024 / 1024, 4),
                 microtime(true) - $start,
-                $counter,
+                $totalCounter,
+                $total,
+                $successCounter,
+                $total,
+                $failedCounter,
                 $total,
             ) . PHP_EOL;
     }
