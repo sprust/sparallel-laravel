@@ -14,13 +14,11 @@ try {
 
     $dir = __DIR__;
 
-    $containerFactory = new SParallelLaravel\Implementation\ContainerFactory(
-        static fn () => require $dir . '/bootstrap.php'
-    );
+    $containerFactory = new SParallelLaravel\Implementation\ContainerFactory();
 
     $worker->serve(containerFactory: $containerFactory);
 } catch (Throwable $exception) {
-    fwrite(STDERR, (string) $exception);
+    fwrite(STDERR, (string)$exception);
 
     $exitCode = 1;
 }
