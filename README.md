@@ -1,5 +1,8 @@
 # Parallel PHP via processes for Laravel
 
+<summary>⚠️ Don't use a writing to STDOUT inside workers</summary>
+<summary>⚠️ VarDumper is muted inside workers</summary>
+
 ## APP
 
 ```dotenv
