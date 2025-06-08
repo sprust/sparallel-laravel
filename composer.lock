@@ -3140,12 +3140,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sprust/sparallel.git",
-                "reference": "f81c811d5306f5343418db5eaef1b513cd4e6164"
+                "reference": "c6b3f49d1cf213e2ea8708d8baa45fb0849428f5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sprust/sparallel/zipball/f81c811d5306f5343418db5eaef1b513cd4e6164",
-                "reference": "f81c811d5306f5343418db5eaef1b513cd4e6164",
+                "url": "https://api.github.com/repos/sprust/sparallel/zipball/c6b3f49d1cf213e2ea8708d8baa45fb0849428f5",
+                "reference": "c6b3f49d1cf213e2ea8708d8baa45fb0849428f5",
                 "shasum": ""
             },
             "require": {
@@ -3184,7 +3184,7 @@
                 "issues": "https://github.com/sprust/sparallel/issues",
                 "source": "https://github.com/sprust/sparallel/tree/master"
             },
-            "time": "2025-06-08T16:53:02+00:00"
+            "time": "2025-06-08T20:39:10+00:00"
         },
         {
             "name": "spiral/goridge",
