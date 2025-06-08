@@ -19,7 +19,11 @@ class StopServerCommand extends Command
      */
     public function handle(WorkersRpcClient $client): void
     {
+        $this->components->info('Stopping server workers...');
+
         // TODO: move method to 'manage' server
         $client->stop();
+
+        $this->components->info('Server workers stopped');
     }
 }

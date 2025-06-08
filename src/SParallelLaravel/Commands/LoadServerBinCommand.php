@@ -29,12 +29,16 @@ class LoadServerBinCommand extends Command
             path: config('sparallel.server.bin-path')
         );
 
+        $this->components->info('Loading server bin...');
+
         $this->components->task(
             "Downloading server bin [{$loader->getVersion()}]",
             static function () use ($loader) {
                 $loader->load();
             }
         );
+
+        $this->components->info('Server bin loaded');
 
         return self::SUCCESS;
     }

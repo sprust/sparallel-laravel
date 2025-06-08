@@ -19,6 +19,10 @@ class ReloadServerWorkersCommand extends Command
      */
     public function handle(WorkersRpcClient $client): void
     {
+        $this->components->info('Reloading server workers...');
+
         $client->reload();
+
+        $this->components->info('Server workers reloaded');
     }
 }
