@@ -37,7 +37,7 @@ class SParallelWorkersTest extends BaseTestCase
     public function success(string $driverClass): void
     {
         $this->onSuccess(
-            workers: $this->makeService($driverClass),
+            workers: $this->makeWorkers($driverClass),
         );
     }
 
@@ -52,7 +52,7 @@ class SParallelWorkersTest extends BaseTestCase
     public function waitFirstOnlySuccess(string $driverClass): void
     {
         $this->onWaitFirstOnlySuccess(
-            workers: $this->makeService($driverClass),
+            workers: $this->makeWorkers($driverClass),
         );
     }
 
@@ -67,7 +67,7 @@ class SParallelWorkersTest extends BaseTestCase
     public function waitFirstNotOnlySuccess(string $driverClass): void
     {
         $this->onWaitFirstNotOnlySuccess(
-            workers: $this->makeService($driverClass),
+            workers: $this->makeWorkers($driverClass),
         );
     }
 
@@ -82,7 +82,7 @@ class SParallelWorkersTest extends BaseTestCase
     public function workersLimit(string $driverClass): void
     {
         $this->onWorkersLimit(
-            workers: $this->makeService($driverClass),
+            workers: $this->makeWorkers($driverClass),
         );
     }
 
@@ -97,7 +97,7 @@ class SParallelWorkersTest extends BaseTestCase
     public function failure(string $driverClass): void
     {
         $this->onFailure(
-            workers: $this->makeService($driverClass),
+            workers: $this->makeWorkers($driverClass),
         );
     }
 
@@ -111,7 +111,7 @@ class SParallelWorkersTest extends BaseTestCase
     public function timeout(string $driverClass): void
     {
         $this->onTimeout(
-            workers: $this->makeService($driverClass),
+            workers: $this->makeWorkers($driverClass),
         );
     }
 
@@ -126,7 +126,7 @@ class SParallelWorkersTest extends BaseTestCase
     public function breakAtFirstError(string $driverClass): void
     {
         $this->onBreakAtFirstError(
-            workers: $this->makeService($driverClass),
+            workers: $this->makeWorkers($driverClass),
         );
     }
 
@@ -141,7 +141,7 @@ class SParallelWorkersTest extends BaseTestCase
     public function bigPayload(string $driverClass): void
     {
         $this->onBigPayload(
-            workers: $this->makeService($driverClass),
+            workers: $this->makeWorkers($driverClass),
         );
     }
 
@@ -156,7 +156,7 @@ class SParallelWorkersTest extends BaseTestCase
     public function memoryLeak(string $driverClass): void
     {
         $this->onMemoryLeak(
-            workers: $this->makeService($driverClass),
+            workers: $this->makeWorkers($driverClass),
         );
     }
 
@@ -180,9 +180,9 @@ class SParallelWorkersTest extends BaseTestCase
 
         $callbacksCount = count($callbacks);
 
-        $service = $this->makeService($driverClass);
+        $workers = $this->makeWorkers($driverClass);
 
-        $results = $service->wait(
+        $results = $workers->wait(
             callbacks: $callbacks,
             timeoutSeconds: 1,
         );
@@ -228,9 +228,9 @@ class SParallelWorkersTest extends BaseTestCase
 
         $callbacksCount = count($callbacks);
 
-        $service = $this->makeService($driverClass);
+        $workers = $this->makeWorkers($driverClass);
 
-        $results = $service->wait(
+        $results = $workers->wait(
             callbacks: $callbacks,
             timeoutSeconds: 1,
         );
@@ -254,7 +254,7 @@ class SParallelWorkersTest extends BaseTestCase
     /**
      * @throws BindingResolutionException
      */
-    private function makeService(string $driverClass): SParallelWorkers
+    private function makeWorkers(string $driverClass): SParallelWorkers
     {
         $app = $this->app;
 
