@@ -25,4 +25,4 @@ services:
     working_dir: /sparallel/libs/server
     volumes:
       - ./:/sparallel
-    command: [ "./sparallel", "start" ]
+    command: [ "./sparallel", "--env=/sparallel/workbench/config/.env.sparallel", "start" ]

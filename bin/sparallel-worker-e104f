@@ -12,8 +12,6 @@ $exitCode = 0;
 try {
     $worker = new ServerWorker();
 
-    $dir = __DIR__;
-
     $containerFactory = new SParallelLaravel\Implementation\ContainerFactory();
 
     $worker->serve(containerFactory: $containerFactory);

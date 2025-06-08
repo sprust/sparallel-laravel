@@ -86,6 +86,7 @@ class SParallelServiceProvider extends ServiceProvider
             $this->publishes(
                 paths: [
                     __DIR__ . '/../../workbench/config/sparallel.php' => config_path('sparallel.php'),
+                    __DIR__ . '/../../workbench/config/.env.sparallel' => base_path('.env.sparallel.example'),
                 ],
                 groups: [
                     'sparallel-laravel',
