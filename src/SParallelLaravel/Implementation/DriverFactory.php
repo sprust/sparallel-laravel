@@ -6,7 +6,6 @@ namespace SParallelLaravel\Implementation;
 
 use SParallel\Contracts\DriverFactoryInterface;
 use SParallel\Contracts\DriverInterface;
-use SParallel\Drivers\Server\ServerDriver;
 use SParallel\Drivers\Sync\SyncDriver;
 
 class DriverFactory implements DriverFactoryInterface
@@ -29,16 +28,16 @@ class DriverFactory implements DriverFactoryInterface
 
         $mode = strtolower(config('sparallel.mode', 'sync'));
 
-        if ($mode === 'sync') {
-            return app(SyncDriver::class);
+        $driverClass = config("sparallel.drivers.$mode");
+
+        if ($driverClass) {
+            $driver = app($driverClass);
+        } else {
+            $driver = app(SyncDriver::class);
+
+            logger()->warning("Unknown sparallel mode: $mode. Using 'sync' mode.");
         }
 
-        if ($mode === 'server') {
-            return app(ServerDriver::class);
-        }
-
-        logger()->warning("Unknown sparallel mode: $mode. Using 'sync' mode.");
-
-        return app(SyncDriver::class);
+        return $this->driver = $driver;
     }
 }
