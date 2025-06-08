@@ -21,6 +21,8 @@ return [
      */
     'mode' => env('SPARALLEL_MODE', 'sync'),
 
+    'log-channel' => env('SPARALLEL_LOG_CHANNEL', 'null'),
+
     'server'    => [
         'host'     => env('SPARALLEL_SERVER_HOST', 'localhost'),
         'port'     => (int) env('SPARALLEL_SERVER_PORT', 18077),

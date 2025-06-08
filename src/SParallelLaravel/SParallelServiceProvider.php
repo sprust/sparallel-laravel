@@ -61,7 +61,12 @@ class SParallelServiceProvider extends ServiceProvider
                 );
             }
         );
-        $this->app->singleton(SParallelLoggerInterface::class, Logger::class);
+        $this->app->singleton(
+            SParallelLoggerInterface::class,
+            static fn() => new Logger(
+                logger()->channel(config('sparallel.log-channel'))
+            )
+        );
 
         // drivers
         $this->app->singleton(DriverFactoryInterface::class, DriverFactory::class);
