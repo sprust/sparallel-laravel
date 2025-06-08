@@ -10,11 +10,8 @@
     ],
     "require": {
         "php": "^8.2",
-        "ext-redis": "*",
         "laravel/framework": "^9.0 | ^10.0 | ^11.0 | ^12.0",
-        "sparallel/sparallel": "dev-master",
-        "ext-posix": "*",
-        "predis/predis": "^2.2"
+        "sparallel/sparallel": "dev-master"
     },
     "require-dev": {
         "phpunit/phpunit": "^11.5",
@@ -27,8 +24,7 @@
         }
     },
     "bin": [
-        "bin/sparallel-process",
-        "bin/sparallel-hybrid-process"
+        "bin/sparallel-worker-e104f"
     ],
     "extra": {
         "laravel": {

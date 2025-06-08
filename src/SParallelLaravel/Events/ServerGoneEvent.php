@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace SParallelLaravel\Events;
 
 use SParallel\Entities\Context;
+use SParallel\Exceptions\RpcCallException;
 
-readonly class TaskFinishedEvent
+readonly class ServerGoneEvent
 {
     public function __construct(
-        public string $driverName,
         public Context $context,
+        public RpcCallException $exception
     ) {
     }
 }

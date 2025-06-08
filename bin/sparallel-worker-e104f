@@ -1,0 +1,24 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use SParallel\Drivers\Server\ServerWorker;
+
+require_once 'autoload.php';
+
+$exitCode = 0;
+
+try {
+    $worker = new ServerWorker();
+
+    $containerFactory = new SParallelLaravel\Implementation\ContainerFactory();
+
+    $worker->serve(containerFactory: $containerFactory);
+} catch (Throwable $exception) {
+    fwrite(STDERR, (string)$exception);
+
+    $exitCode = 1;
+}
+
+exit($exitCode);

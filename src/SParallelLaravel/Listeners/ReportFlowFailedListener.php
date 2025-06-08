@@ -6,7 +6,7 @@ namespace SParallelLaravel\Listeners;
 
 use SParallelLaravel\Events\FlowFailedEvent;
 
-class LogSParallelFlowFailedListener
+class ReportFlowFailedListener
 {
     public function handle(FlowFailedEvent $event): void
     {

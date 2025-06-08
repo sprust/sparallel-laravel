@@ -6,7 +6,7 @@ namespace SParallelLaravel\Implementation;
 
 use Laravel\SerializableClosure\SerializableClosure;
 use SParallel\Contracts\SerializerInterface;
-use SParallel\Transport\OpisSerializer;
+use SParallel\Implementation\OpisSerializer;
 use Throwable;
 
 class Serializer implements SerializerInterface

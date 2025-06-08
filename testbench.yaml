@@ -1,0 +1,8 @@
+workbench:
+  discovers:
+    config: true
+env:
+  - SPARALLEL_MODE=server
+  - SPARALLEL_SERVER_HOST=spl-server
+  - SPARALLEL_SERVER_PORT=18077
+  - SPARALLEL_SERVER_BIN_PATH=/sparallel/libs/server/sparallel
