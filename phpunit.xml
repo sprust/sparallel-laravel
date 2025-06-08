@@ -10,7 +10,7 @@
         </testsuite>
     </testsuites>
     <php>
-        <env name="REDIS_HOST" value="spl-redis"/>
-        <env name="REDIS_PORT" value="6379"/>
+        <env name="SPARALLEL_SERVER_HOST" value="spl-server"/>
+        <env name="SPARALLEL_SERVER_PORT" value="18077"/>
     </php>
 </phpunit>
