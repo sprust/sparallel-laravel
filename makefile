@@ -5,6 +5,7 @@ setup:
 	make down
 	make build
 	docker-compose up php -d
+	make composer c=i
 	make load-server-bin
 	make stop
 
@@ -23,12 +24,13 @@ up:
 up-d:
 	docker-compose up -d
 
-watch:
-	make up-d
+re-watch:
+	make restart
 	make server-logs
 
 restart:
-	docker-compose restart
+	make stop
+	make up-d
 
 stop:
 	docker-compose stop
@@ -50,6 +52,9 @@ server-logs:
 
 server-stop:
 	make artisan c=sparallel:server:stop
+
+server-stats:
+	make artisan c=sparallel:server:stats
 
 server-workers-reload:
 	make artisan c=sparallel:server:workers:reload
@@ -78,3 +83,9 @@ check:
 
 declare-strict:
 	grep -Lr "declare(strict_types=1);" ./src | grep .php
+
+htop-workers:
+	htop -t --filter=sparallel-worker-e104f
+
+zombies:
+	top -b n1 | grep 'Z'

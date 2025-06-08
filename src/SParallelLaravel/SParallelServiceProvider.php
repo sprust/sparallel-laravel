@@ -20,7 +20,7 @@ use SParallel\Transport\CallbackTransport;
 use SParallel\Transport\ContextTransport;
 use SParallel\Transport\ServerTaskTransport;
 use SParallel\Transport\TaskResultTransport;
-use SParallelLaravel\Commands\BenchmarkServerWorkersCommand;
+use SParallelLaravel\Commands\BenchmarkCommand;
 use SParallelLaravel\Commands\LoadServerBinCommand;
 use SParallelLaravel\Commands\ReloadServerWorkersCommand;
 use SParallelLaravel\Commands\ShowServerStatsCommand;
@@ -80,7 +80,7 @@ class SParallelServiceProvider extends ServiceProvider
                 ShowServerStatsCommand::class,
                 ReloadServerWorkersCommand::class,
                 StopServerCommand::class,
-                BenchmarkServerWorkersCommand::class,
+                BenchmarkCommand::class,
             ]);
 
             $this->publishes(
