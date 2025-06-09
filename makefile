@@ -24,6 +24,9 @@ up:
 up-d:
 	docker-compose up -d
 
+up-php:
+	docker start spl-php
+
 re-watch:
 	make restart
 	make server-logs

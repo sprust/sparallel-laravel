@@ -18,6 +18,7 @@ use SParallel\Implementation\CallbackCaller;
 use SParallel\Implementation\RpcClient;
 use SParallel\Transport\CallbackTransport;
 use SParallel\Transport\ContextTransport;
+use SParallel\Transport\ExceptionTransport;
 use SParallel\Transport\ServerTaskTransport;
 use SParallel\Transport\TaskResultTransport;
 use SParallelLaravel\Commands\BenchmarkCommand;
@@ -45,6 +46,7 @@ class SParallelServiceProvider extends ServiceProvider
         $this->app->singleton(ContextTransport::class);
         $this->app->singleton(ServerTaskTransport::class);
         $this->app->singleton(TaskResultTransport::class);
+        $this->app->singleton(ExceptionTransport::class);
 
         // implementations
         $this->app->singleton(EventsBusInterface::class, EventsBus::class);
