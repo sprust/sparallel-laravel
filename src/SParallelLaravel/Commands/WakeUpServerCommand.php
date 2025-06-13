@@ -8,27 +8,27 @@ use Illuminate\Console\Command;
 use SParallel\Server\ManagerRpcClient;
 use Throwable;
 
-class StopServerCommand extends Command
+class WakeUpServerCommand extends Command
 {
-    protected $signature = 'sparallel:server:stop';
+    protected $signature = 'sparallel:server:wake-up';
 
-    protected $description = 'Reload server workers';
+    protected $description = 'Sleep server';
 
     /**
      * @throws Throwable
      */
     public function handle(ManagerRpcClient $client): void
     {
-        $this->components->info('Stopping server...');
+        $this->components->info('Wake up server...');
 
         try {
-            $client->stop();
+            $client->wakeUp();
         } catch (Throwable $exception) {
             $this->error($exception->getMessage());
 
             return;
         }
 
-        $this->components->info('Server stopped');
+        $this->components->info('Server is woke up');
     }
 }

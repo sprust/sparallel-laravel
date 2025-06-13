@@ -47,21 +47,6 @@ composer:
 artisan:
 	"$(PHP_CLI)" ./vendor/bin/testbench ${c}
 
-load-server-bin:
-	make artisan c=sparallel:server:load
-
-server-logs:
-	docker logs -f spl-server
-
-server-stop:
-	make artisan c=sparallel:server:stop
-
-server-stats:
-	make artisan c=sparallel:server:stats
-
-server-workers-reload:
-	make artisan c=sparallel:server:workers:reload
-
 test:
 	"$(PHP_CLI)" ./vendor/bin/phpunit \
 		-d memory_limit=512M \
@@ -83,6 +68,7 @@ phpstan:
 check:
 	make phpstan
 	make test
+	make command-workers-benchmark
 
 declare-strict:
 	grep -Lr "declare(strict_types=1);" ./src | grep .php
@@ -92,3 +78,27 @@ htop-workers:
 
 zombies:
 	top -b n1 | grep 'Z'
+
+logs-server:
+	docker logs -f spl-server
+
+command-load-server-bin:
+	make artisan c=sparallel:load-server-bin
+
+command-server-sleep:
+	make artisan c=sparallel:server:sleep
+
+command-server-stats:
+	make artisan c=sparallel:server:stats
+
+command-server-stop:
+	make artisan c=sparallel:server:stop
+
+command-server-wake-up:
+	make artisan c=sparallel:server:wake-up
+
+command-server-workers-reload:
+	make artisan c=sparallel:server:workers:reload
+
+command-workers-benchmark:
+	make artisan c=sparallel:workers:benchmark

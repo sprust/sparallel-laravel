@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace SParallelLaravel\Commands;
 
 use Illuminate\Console\Command;
-use SParallel\Server\StatsRpcClient;
+use SParallel\Server\ManagerRpcClient;
 use Throwable;
 
 class ShowServerStatsCommand extends Command
@@ -14,12 +14,12 @@ class ShowServerStatsCommand extends Command
 
     protected $description = 'Show server stats';
 
-    public function handle(StatsRpcClient $client): void
+    public function handle(ManagerRpcClient $client): void
     {
         /** @phpstan-ignore-next-line while.alwaysTrue */
         while (true) {
             try {
-                $json = $client->get();
+                $stats = $client->stats();
             } catch (Throwable $exception) {
                 system('clear');
 
@@ -32,7 +32,7 @@ class ShowServerStatsCommand extends Command
 
             system('clear');
 
-            dump(json_decode($json, true));
+            dump($stats);
 
             sleep(1);
         }

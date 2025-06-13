@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace SParallelLaravel\Commands;
 
 use Illuminate\Console\Command;
-use SParallelLaravel\Services\ServerBinLoader;
+use SParallel\Server\ServerBinLoader;
 
 class LoadServerBinCommand extends Command
 {
@@ -14,7 +14,7 @@ class LoadServerBinCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'sparallel:server:load';
+    protected $signature = 'sparallel:load-server-bin';
 
     /**
      * The console command description.
@@ -29,14 +29,9 @@ class LoadServerBinCommand extends Command
             path: config('sparallel.server.bin-path')
         );
 
-        $this->components->info('Loading server bin...');
+        $this->info("Downloading server bin [{$loader->getVersion()}]");
 
-        $this->components->task(
-            "Downloading server bin [{$loader->getVersion()}]",
-            static function () use ($loader) {
-                $loader->load();
-            }
-        );
+        $loader->load();
 
         $this->components->info('Server bin loaded');
 

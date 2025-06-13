@@ -25,7 +25,9 @@ use SParallelLaravel\Commands\BenchmarkCommand;
 use SParallelLaravel\Commands\LoadServerBinCommand;
 use SParallelLaravel\Commands\ReloadServerWorkersCommand;
 use SParallelLaravel\Commands\ShowServerStatsCommand;
+use SParallelLaravel\Commands\SleepServerCommand;
 use SParallelLaravel\Commands\StopServerCommand;
+use SParallelLaravel\Commands\WakeUpServerCommand;
 use SParallelLaravel\Implementation\DriverFactory;
 use SParallelLaravel\Implementation\EventsBus;
 use SParallelLaravel\Implementation\Logger;
@@ -88,6 +90,8 @@ class SParallelServiceProvider extends ServiceProvider
                 ReloadServerWorkersCommand::class,
                 StopServerCommand::class,
                 BenchmarkCommand::class,
+                SleepServerCommand::class,
+                WakeUpServerCommand::class,
             ]);
 
             $this->publishes(

@@ -21,7 +21,13 @@ class ReloadServerWorkersCommand extends Command
     {
         $this->components->info('Reloading server workers...');
 
-        $client->reload();
+        try {
+            $client->reload();
+        } catch (Throwable $exception) {
+            $this->error($exception->getMessage());
+
+            return;
+        }
 
         $this->components->info('Server workers reloaded');
     }

@@ -12,7 +12,7 @@ use Throwable;
 
 class BenchmarkCommand extends Command
 {
-    protected $signature = 'sparallel:benchmark
+    protected $signature = 'sparallel:workers:benchmark
         {--timeoutSeconds=5}
         {--workersLimit=10}
         {--uniqueCount=5}
