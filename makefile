@@ -21,19 +21,8 @@ down:
 up:
 	docker-compose up
 
-up-d:
-	docker-compose up -d
-
 up-php:
 	docker start spl-php
-
-re-watch:
-	make restart
-	make server-logs
-
-restart:
-	make stop
-	make up-d
 
 stop:
 	docker-compose stop
